@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "experiment-data-platform",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-03-25",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://ogcfrpncykgyoyrwpvat.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_EIA7PjaNeXtqCDA7XsPiQQ_UZ7uGUtZ",
+    "TEACHER_SHARE_TOKEN": "physics-class-2026"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
