@@ -1,8 +1,8 @@
 create table if not exists public.experiment_rows (
   group_no integer primary key,
   charged_object text not null,
-  glass_result text check (glass_result in ('0', '1')),
-  rubber_result text check (rubber_result in ('0', '1')),
+  glass_result text check (glass_result in ('相互排斥', '相互吸引')),
+  rubber_result text check (rubber_result in ('相互排斥', '相互吸引')),
   updated_at timestamptz
 );
 
@@ -19,6 +19,17 @@ values
 on conflict (group_no) do update
 set charged_object = excluded.charged_object;
 
+alter table public.experiment_rows drop constraint if exists experiment_rows_glass_result_check;
+alter table public.experiment_rows drop constraint if exists experiment_rows_rubber_result_check;
+
+alter table public.experiment_rows
+  add constraint experiment_rows_glass_result_check
+  check (glass_result in ('相互排斥', '相互吸引'));
+
+alter table public.experiment_rows
+  add constraint experiment_rows_rubber_result_check
+  check (rubber_result in ('相互排斥', '相互吸引'));
+
 alter table public.experiment_rows enable row level security;
 
 drop policy if exists "public read experiment rows" on public.experiment_rows;
@@ -29,4 +40,3 @@ to anon, authenticated
 using (true);
 
 alter publication supabase_realtime add table public.experiment_rows;
-

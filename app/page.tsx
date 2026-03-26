@@ -1,6 +1,10 @@
 import Link from "next/link";
 
+import { getTeacherShareToken } from "@/lib/env";
+
 export default function HomePage() {
+  const teacherShareToken = getTeacherShareToken();
+
   return (
     <main className="shell">
       <section className="panel hero">
@@ -14,12 +18,11 @@ export default function HomePage() {
           <Link className="button-link" href="/student">
             进入学生端
           </Link>
-          <Link className="button-link secondary" href="/teacher/demo-token">
-            教师端示例入口
+          <Link className="button-link secondary" href={`/teacher/${teacherShareToken}`}>
+            教师端入口
           </Link>
         </div>
       </section>
     </main>
   );
 }
-

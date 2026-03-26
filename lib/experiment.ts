@@ -1,18 +1,21 @@
-export type BinaryAnswer = "0" | "1" | null;
+export type ExperimentResult = "相互排斥" | "相互吸引" | null;
 
 export type ExperimentRow = {
   group_no: number;
   charged_object: string;
-  glass_result: BinaryAnswer;
-  rubber_result: BinaryAnswer;
+  glass_result: ExperimentResult;
+  rubber_result: ExperimentResult;
   updated_at: string | null;
 };
 
 export type StudentSubmissionPayload = {
   groupNo: number;
-  glassResult: Exclude<BinaryAnswer, null>;
-  rubberResult: Exclude<BinaryAnswer, null>;
+  glassResult: Exclude<ExperimentResult, null>;
+  rubberResult: Exclude<ExperimentResult, null>;
 };
+
+export const RESULT_REPEL: Exclude<ExperimentResult, null> = "相互排斥";
+export const RESULT_ATTRACT: Exclude<ExperimentResult, null> = "相互吸引";
 
 export const CHARGED_OBJECTS = [
   "毛皮摩擦过的梳子",
@@ -29,6 +32,22 @@ export const TOTAL_GROUPS = CHARGED_OBJECTS.length;
 
 export function isValidGroupNo(input: number) {
   return Number.isInteger(input) && input >= 1 && input <= TOTAL_GROUPS;
+}
+
+export function isExperimentResult(value: unknown): value is Exclude<ExperimentResult, null> {
+  return value === RESULT_REPEL || value === RESULT_ATTRACT;
+}
+
+export function getResultTone(value: ExperimentResult) {
+  if (value === RESULT_REPEL) {
+    return "repel";
+  }
+
+  if (value === RESULT_ATTRACT) {
+    return "attract";
+  }
+
+  return "pending";
 }
 
 export function formatUpdatedAt(value: string | null) {
@@ -52,4 +71,3 @@ export function getLatestUpdatedAt(rows: ExperimentRow[]) {
     .filter((value): value is string => Boolean(value))
     .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0] ?? null;
 }
-

@@ -2,7 +2,12 @@
 
 import { startTransition, useState } from "react";
 
-import type { BinaryAnswer, ExperimentRow } from "@/lib/experiment";
+import {
+  type ExperimentResult,
+  type ExperimentRow,
+  RESULT_ATTRACT,
+  RESULT_REPEL
+} from "@/lib/experiment";
 
 type RequestState = {
   kind: "idle" | "success" | "error";
@@ -14,8 +19,8 @@ const EMPTY_STATE: RequestState = { kind: "idle", message: "" };
 type AnswerEditorProps = {
   id: string;
   title: string;
-  value: BinaryAnswer;
-  onChange: (value: Exclude<BinaryAnswer, null>) => void;
+  value: ExperimentResult;
+  onChange: (value: Exclude<ExperimentResult, null>) => void;
 };
 
 function AnswerEditor({ id, title, value, onChange }: AnswerEditorProps) {
@@ -25,25 +30,25 @@ function AnswerEditor({ id, title, value, onChange }: AnswerEditorProps) {
       <div className="choice-set">
         <div className="choice">
           <input
-            checked={value === "1"}
-            id={`${id}-1`}
+            checked={value === RESULT_REPEL}
+            id={`${id}-repel`}
             name={id}
-            onChange={() => onChange("1")}
+            onChange={() => onChange(RESULT_REPEL)}
             type="radio"
-            value="1"
+            value={RESULT_REPEL}
           />
-          <label htmlFor={`${id}-1`}>1 = 相互排斥</label>
+          <label htmlFor={`${id}-repel`}>相互排斥</label>
         </div>
         <div className="choice">
           <input
-            checked={value === "0"}
-            id={`${id}-0`}
+            checked={value === RESULT_ATTRACT}
+            id={`${id}-attract`}
             name={id}
-            onChange={() => onChange("0")}
+            onChange={() => onChange(RESULT_ATTRACT)}
             type="radio"
-            value="0"
+            value={RESULT_ATTRACT}
           />
-          <label htmlFor={`${id}-0`}>0 = 相互吸引</label>
+          <label htmlFor={`${id}-attract`}>相互吸引</label>
         </div>
       </div>
     </div>
@@ -53,8 +58,8 @@ function AnswerEditor({ id, title, value, onChange }: AnswerEditorProps) {
 export function StudentForm() {
   const [groupInput, setGroupInput] = useState("");
   const [row, setRow] = useState<ExperimentRow | null>(null);
-  const [glassResult, setGlassResult] = useState<BinaryAnswer>(null);
-  const [rubberResult, setRubberResult] = useState<BinaryAnswer>(null);
+  const [glassResult, setGlassResult] = useState<ExperimentResult>(null);
+  const [rubberResult, setRubberResult] = useState<ExperimentResult>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestState, setRequestState] = useState<RequestState>(EMPTY_STATE);
@@ -74,7 +79,6 @@ export function StudentForm() {
         cache: "no-store"
       });
       const payload = (await response.json()) as { message?: string; row?: ExperimentRow };
-
       const rowData = payload.row;
 
       if (!response.ok || !rowData) {
@@ -127,7 +131,6 @@ export function StudentForm() {
       });
 
       const payload = (await response.json()) as { message?: string; row?: ExperimentRow };
-
       const rowData = payload.row;
 
       if (!response.ok || !rowData) {
@@ -199,13 +202,13 @@ export function StudentForm() {
               <AnswerEditor
                 id="glass-result"
                 onChange={setGlassResult}
-                title="与丝绸摩擦过的玻璃棒（填 1 或 0）"
+                title="与丝绸摩擦过的玻璃棒"
                 value={glassResult}
               />
               <AnswerEditor
                 id="rubber-result"
                 onChange={setRubberResult}
-                title="与毛皮摩擦过的橡胶棒（填 1 或 0）"
+                title="与毛皮摩擦过的橡胶棒"
                 value={rubberResult}
               />
 
@@ -223,16 +226,8 @@ export function StudentForm() {
 
       <aside className="panel card">
         <h3>填写提示</h3>
-        <p className="hint">
-          第一版只支持固定实验模板。学生只需填写两项测量结果：
-          <br />
-          1 表示相互排斥。
-          <br />
-          0 表示相互吸引。
-        </p>
-        <p className="hint">
-          同一小组可以再次提交，系统会保留最新值，并在教师端覆盖显示。
-        </p>
+        <p className="hint">第一版只支持固定实验模板。学生只需根据本组实验现象，直接选择“相互排斥”或“相互吸引”。</p>
+        <p className="hint">同一小组可以再次提交，系统会保留最新值，并在教师端覆盖显示。</p>
       </aside>
     </section>
   );

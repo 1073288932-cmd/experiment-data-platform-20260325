@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { updateExperimentRow } from "@/lib/data";
-import type { BinaryAnswer, StudentSubmissionPayload } from "@/lib/experiment";
-import { isValidGroupNo } from "@/lib/experiment";
+import { isExperimentResult, isValidGroupNo, type StudentSubmissionPayload } from "@/lib/experiment";
 
 export const dynamic = "force-dynamic";
-
-function isBinaryAnswer(value: unknown): value is Exclude<BinaryAnswer, null> {
-  return value === "0" || value === "1";
-}
 
 export async function POST(request: NextRequest) {
   const body = (await request.json()) as Partial<StudentSubmissionPayload>;
@@ -17,8 +12,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "组号无效，请输入 1 到 8 之间的整数。" }, { status: 400 });
   }
 
-  if (!isBinaryAnswer(body.glassResult) || !isBinaryAnswer(body.rubberResult)) {
-    return NextResponse.json({ message: "提交内容无效，结果只能填写 1 或 0。" }, { status: 400 });
+  if (!isExperimentResult(body.glassResult) || !isExperimentResult(body.rubberResult)) {
+    return NextResponse.json(
+      { message: "提交内容无效，结果只能填写“相互排斥”或“相互吸引”。" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -40,4 +38,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

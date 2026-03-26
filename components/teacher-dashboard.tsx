@@ -6,6 +6,7 @@ import {
   countSubmittedRows,
   formatUpdatedAt,
   getLatestUpdatedAt,
+  getResultTone,
   type ExperimentRow,
   TOTAL_GROUPS
 } from "@/lib/experiment";
@@ -199,10 +200,18 @@ export function TeacherDashboard({ initialRows, token }: TeacherDashboardProps) 
                   <td>{row.group_no}</td>
                   <td>{row.charged_object}</td>
                   <td>
-                    {row.glass_result === null ? <span className="muted">待填写</span> : <span className="pill">{row.glass_result}</span>}
+                    {row.glass_result === null ? (
+                      <span className="muted">待填写</span>
+                    ) : (
+                      <span className={`result-pill ${getResultTone(row.glass_result)}`}>{row.glass_result}</span>
+                    )}
                   </td>
                   <td>
-                    {row.rubber_result === null ? <span className="muted">待填写</span> : <span className="pill">{row.rubber_result}</span>}
+                    {row.rubber_result === null ? (
+                      <span className="muted">待填写</span>
+                    ) : (
+                      <span className={`result-pill ${getResultTone(row.rubber_result)}`}>{row.rubber_result}</span>
+                    )}
                   </td>
                   <td>{formatUpdatedAt(row.updated_at)}</td>
                 </tr>
