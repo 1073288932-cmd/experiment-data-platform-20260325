@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   const body = (await request.json()) as Partial<StudentSubmissionPayload>;
 
   if (!isValidGroupNo(Number(body.groupNo))) {
-    return NextResponse.json({ message: "组号无效，请输入 1 到 8 之间的整数。" }, { status: 400 });
+    return NextResponse.json({ message: "组号无效，请输入 1 到 6 之间的整数。" }, { status: 400 });
   }
 
   if (!isExperimentResult(body.glassResult) || !isExperimentResult(body.rubberResult)) {

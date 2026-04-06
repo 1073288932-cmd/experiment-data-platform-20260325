@@ -14,18 +14,21 @@ export type StudentSubmissionPayload = {
   rubberResult: Exclude<ExperimentResult, null>;
 };
 
+export type ChargedObjectDefinition = {
+  fullText: string;
+  emphasis: string;
+};
+
 export const RESULT_REPEL: Exclude<ExperimentResult, null> = "相互排斥";
 export const RESULT_ATTRACT: Exclude<ExperimentResult, null> = "相互吸引";
 
-export const CHARGED_OBJECTS = [
-  "毛皮摩擦过的梳子",
-  "梳子摩擦过的毛皮",
-  "干毛巾摩擦过的吸管",
-  "塑料袋摩擦过的气球",
-  "头皮摩擦过的塑料尺",
-  "绒布摩擦过的塑料衣架",
-  "毛衣摩擦过的泡沫塑料",
-  "毛巾摩擦过的塑料餐盒"
+export const CHARGED_OBJECTS: ChargedObjectDefinition[] = [
+  { fullText: "毛皮摩擦过的PVC管", emphasis: "PVC管" },
+  { fullText: "头发摩擦过的气球", emphasis: "气球" },
+  { fullText: "纸巾摩擦过的吸管", emphasis: "吸管" },
+  { fullText: "丝绸摩擦过的塑料盒", emphasis: "塑料盒" },
+  { fullText: "塑料袋摩擦过的桶", emphasis: "桶" },
+  { fullText: "毛巾摩擦过的试管", emphasis: "试管" }
 ] as const;
 
 export const TOTAL_GROUPS = CHARGED_OBJECTS.length;
@@ -66,8 +69,18 @@ export function countSubmittedRows(rows: ExperimentRow[]) {
 }
 
 export function getLatestUpdatedAt(rows: ExperimentRow[]) {
-  return rows
-    .map((row) => row.updated_at)
-    .filter((value): value is string => Boolean(value))
-    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0] ?? null;
+  return (
+    rows
+      .map((row) => row.updated_at)
+      .filter((value): value is string => Boolean(value))
+      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0] ?? null
+  );
+}
+
+export function getChargedObjectDefinition(groupNo: number) {
+  return CHARGED_OBJECTS[groupNo - 1] ?? null;
+}
+
+export function getDisplayChargedObject(groupNo: number, fallback?: string | null) {
+  return getChargedObjectDefinition(groupNo)?.fullText ?? fallback ?? "";
 }

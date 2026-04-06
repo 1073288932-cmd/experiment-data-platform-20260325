@@ -5,10 +5,12 @@ import { useEffect, useState } from "react";
 import {
   countSubmittedRows,
   formatUpdatedAt,
+  getChargedObjectDefinition,
+  getDisplayChargedObject,
   getLatestUpdatedAt,
   getResultTone,
-  type ExperimentRow,
-  TOTAL_GROUPS
+  TOTAL_GROUPS,
+  type ExperimentRow
 } from "@/lib/experiment";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
@@ -26,6 +28,25 @@ const EMPTY_ACTION_STATE: ActionState = {
   kind: "idle",
   message: ""
 };
+
+function renderChargedObject(groupNo: number, fallback?: string | null) {
+  const definition = getChargedObjectDefinition(groupNo);
+  const text = getDisplayChargedObject(groupNo, fallback);
+
+  if (!definition || !text.includes(definition.emphasis)) {
+    return text;
+  }
+
+  const [prefix, suffix] = text.split(definition.emphasis);
+
+  return (
+    <>
+      {prefix}
+      <span className="charged-object-emphasis">{definition.emphasis}</span>
+      {suffix}
+    </>
+  );
+}
 
 export function TeacherDashboard({ initialRows, token }: TeacherDashboardProps) {
   const [rows, setRows] = useState(initialRows);
@@ -93,7 +114,7 @@ export function TeacherDashboard({ initialRows, token }: TeacherDashboardProps) 
   }, [token]);
 
   const handleReset = async () => {
-    const confirmed = window.confirm("确认要清空本次实验数据吗？这会把 1 到 8 组的结果全部重置为空。");
+    const confirmed = window.confirm(`确认要清空本次实验数据吗？这会把 1 到 ${TOTAL_GROUPS} 组的结果全部重置为空。`);
 
     if (!confirmed) {
       return;
@@ -159,15 +180,7 @@ export function TeacherDashboard({ initialRows, token }: TeacherDashboardProps) 
       </div>
 
       <div className="panel card">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            gap: "16px",
-            flexWrap: "wrap"
-          }}
-        >
+        <div className="teacher-table-header">
           <div>
             <h2>全班实验总表</h2>
             <p className="hint">{syncMessage}</p>
@@ -183,8 +196,8 @@ export function TeacherDashboard({ initialRows, token }: TeacherDashboardProps) 
           </div>
         ) : null}
 
-        <div className="table-wrap">
-          <table>
+        <div className="table-wrap teacher-table-wrap">
+          <table className="teacher-table">
             <thead>
               <tr>
                 <th>组别</th>
@@ -198,7 +211,7 @@ export function TeacherDashboard({ initialRows, token }: TeacherDashboardProps) 
               {rows.map((row) => (
                 <tr key={row.group_no}>
                   <td>{row.group_no}</td>
-                  <td>{row.charged_object}</td>
+                  <td className="teacher-object-cell">{renderChargedObject(row.group_no, row.charged_object)}</td>
                   <td>
                     {row.glass_result === null ? (
                       <span className="muted">待填写</span>

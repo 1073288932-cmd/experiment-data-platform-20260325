@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { ExperimentRow, StudentSubmissionPayload } from "@/lib/experiment";
+import { TOTAL_GROUPS, type ExperimentRow, type StudentSubmissionPayload } from "@/lib/experiment";
 
 const TABLE_NAME = "experiment_rows";
 
@@ -10,6 +10,7 @@ export async function listExperimentRows() {
   const { data, error } = await supabase
     .from(TABLE_NAME)
     .select("*")
+    .lte("group_no", TOTAL_GROUPS)
     .order("group_no", { ascending: true });
 
   if (error) {
@@ -64,6 +65,7 @@ export async function resetExperimentRows() {
       updated_at: null
     })
     .gt("group_no", 0)
+    .lte("group_no", TOTAL_GROUPS)
     .select("*");
 
   if (error) {

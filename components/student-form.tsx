@@ -5,6 +5,8 @@ import { startTransition, useState } from "react";
 import {
   type ExperimentResult,
   type ExperimentRow,
+  getChargedObjectDefinition,
+  getDisplayChargedObject,
   RESULT_ATTRACT,
   RESULT_REPEL
 } from "@/lib/experiment";
@@ -22,6 +24,25 @@ type AnswerEditorProps = {
   value: ExperimentResult;
   onChange: (value: Exclude<ExperimentResult, null>) => void;
 };
+
+function renderChargedObject(groupNo: number, fallback?: string | null) {
+  const definition = getChargedObjectDefinition(groupNo);
+  const text = getDisplayChargedObject(groupNo, fallback);
+
+  if (!definition || !text.includes(definition.emphasis)) {
+    return text;
+  }
+
+  const [prefix, suffix] = text.split(definition.emphasis);
+
+  return (
+    <>
+      {prefix}
+      <span className="charged-object-emphasis">{definition.emphasis}</span>
+      {suffix}
+    </>
+  );
+}
 
 function AnswerEditor({ id, title, value, onChange }: AnswerEditorProps) {
   return (
@@ -159,7 +180,7 @@ export function StudentForm() {
       <div className="panel card">
         <h2>学生端填写</h2>
         <p className="hint">
-          输入你的小组号，系统会只显示本组这一行。填写完成后点击提交，教师端会实时更新总表。
+          输入你的小组号，系统会只显示本组这一行。当前实验共 6 组，填写完成后点击提交，教师端会实时更新总表。
         </p>
         <div className="inline-form">
           <div className="field">
@@ -168,7 +189,7 @@ export function StudentForm() {
               id="group-input"
               inputMode="numeric"
               onChange={(event) => setGroupInput(event.target.value)}
-              placeholder="例如：2"
+              placeholder="请输入 1 到 6"
               value={groupInput}
             />
           </div>
@@ -195,7 +216,7 @@ export function StudentForm() {
                 </div>
                 <div className="meta-box">
                   <span>带电体</span>
-                  <strong>{row.charged_object}</strong>
+                  <strong>{renderChargedObject(row.group_no, row.charged_object)}</strong>
                 </div>
               </div>
 
@@ -218,15 +239,13 @@ export function StudentForm() {
             </div>
           </div>
         ) : (
-          <div className="empty-note">
-            先输入小组号并读取数据，然后系统才会展示你本组这一行的实验信息。
-          </div>
+          <div className="empty-note">先输入小组号并读取数据，然后系统会展示你本组这一行的实验信息。</div>
         )}
       </div>
 
       <aside className="panel card">
         <h3>填写提示</h3>
-        <p className="hint">第一版只支持固定实验模板。学生只需根据本组实验现象，直接选择“相互排斥”或“相互吸引”。</p>
+        <p className="hint">当前模板固定为 6 个小组。重点带电体名称会用红色标出，便于学生快速核对本组器材。</p>
         <p className="hint">同一小组可以再次提交，系统会保留最新值，并在教师端覆盖显示。</p>
       </aside>
     </section>

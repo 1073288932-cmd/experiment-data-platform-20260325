@@ -10,10 +10,7 @@ export default function HomePage() {
       <section className="panel hero">
         <p className="eyebrow">Classroom Data Flow</p>
         <h1>实验数据收集平台</h1>
-        <p>
-          学生端只填写自己小组的一行实验结果，教师端自动汇总全班数据，并通过 Supabase
-          Realtime 订阅实现近实时刷新。
-        </p>
+        <p>学生端按小组填写实验结果，教师端实时汇总全班数据。当前实验模板共 6 组，重点带电体名称会在页面中标红显示。</p>
         <div className="hero-actions">
           <Link className="button-link" href="/student">
             进入学生端

@@ -1,7 +1,6 @@
 :root {
   color-scheme: light;
   --bg: #f4efe3;
-  --bg-accent: #fffaf1;
   --surface: rgba(255, 251, 243, 0.92);
   --surface-strong: #fffef9;
   --line: rgba(91, 74, 48, 0.18);
@@ -11,6 +10,7 @@
   --brand: #c86c2c;
   --brand-strong: #a44d15;
   --success: #2f7d58;
+  --danger: #d62c2c;
   --shadow: 0 20px 60px rgba(87, 61, 22, 0.12);
 }
 
@@ -45,7 +45,7 @@ select {
 }
 
 .shell {
-  width: min(1120px, calc(100% - 32px));
+  width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 28px 0 64px;
 }
@@ -80,7 +80,7 @@ select {
 
 .hero p {
   margin: 0;
-  max-width: 60ch;
+  max-width: 70ch;
   color: var(--muted);
   line-height: 1.7;
 }
@@ -281,6 +281,14 @@ select {
   font-size: 1.8rem;
 }
 
+.teacher-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .table-wrap {
   overflow-x: auto;
 }
@@ -300,19 +308,44 @@ td {
 }
 
 th {
-  background: rgba(241, 224, 194, 0.5);
+  background: rgba(205, 224, 244, 0.75);
   font-weight: 700;
+}
+
+.teacher-table {
+  min-width: 1080px;
+}
+
+.teacher-table th,
+.teacher-table td {
+  font-size: 1.35rem;
+  line-height: 1.5;
+  padding: 18px 16px;
+}
+
+.teacher-table th {
+  font-size: 1.5rem;
+}
+
+.teacher-object-cell {
+  font-weight: 700;
+}
+
+.charged-object-emphasis {
+  color: var(--danger);
+  font-weight: 800;
 }
 
 .result-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 88px;
-  padding: 7px 12px;
+  min-width: 110px;
+  padding: 8px 14px;
   border-radius: 999px;
   font-weight: 700;
   border: 1px solid transparent;
+  font-size: 1rem;
 }
 
 .result-pill.repel {
@@ -351,5 +384,15 @@ th {
 
   .card {
     padding: 22px;
+  }
+
+  .teacher-table {
+    min-width: 860px;
+  }
+
+  .teacher-table th,
+  .teacher-table td {
+    font-size: 1.05rem;
+    padding: 14px 12px;
   }
 }
