@@ -16,6 +16,8 @@ This skill is self-contained for Codex and Claude Code. It bundles:
 - Textbook images: `assets/textbooks/八下课本/images/`
 - Word template: `assets/templates/模板.docx` and ASCII alias `assets/templates/lesson-template.docx`
 - Template filling script: `scripts/fill_lesson_template.ps1`
+- Deep question-chain reference: `references/deep-question-chain.md`
+- Activity design reference: `references/activity-design.md`
 
 ## CRITICAL Workflow
 
@@ -52,13 +54,24 @@ This skill is self-contained for Codex and Claude Code. It bundles:
 - NEVER leave `教学目标`, `板书设计`, `作业布置`, or `教后记` blank in the final Word. Reason: these are required template cells.
 - NEVER put only `（课后填写）` in `教后记`. Reason: the user requires the table to be filled; write a usable reflective note unless explicitly told to leave it blank.
 - NEVER say a long task succeeded until command output or file inspection proves it. Reason: task progress is unknowable while the operation is still running.
+- NEVER pass a full lesson-plan JSON object directly inside a PowerShell command line. Reason: Chinese quotation marks, newlines, backslashes, and nested quotes are often parsed by PowerShell before the script receives them, causing false JSON failures or forcing an incomplete simplified JSON.
+- NEVER replace the complete JSON with a simplified JSON just to make PowerShell parsing succeed. Reason: the simplified JSON usually drops teaching objectives, question labels, board design, reflection, or detailed process content, which makes the Word output incomplete.
+- DO NOT use Chinese smart quotes `“ ” ‘ ’` as JSON syntax. Reason: valid JSON requires ASCII double quotes `"` for keys and string boundaries; Chinese punctuation may appear only inside already quoted string values.
 - DO NOT put `问题链` as a meta label in final `教学环节` or `设计意图` cells. Reason: those cells should stay concise and polished.
-- DO put explicit check labels such as `问题1：...` and `活动一：...` inside the final `教与学活动` cell. Reason: the teacher and AI need to verify that every confirmed question and activity is used.
+- DO put explicit check labels such as `核心问题1：...`, `递进型问题1-1-1：...`, `探究型问题2-2-1：...`, `过渡型问题2-3-1：...`, `迁移型问题3-3-1：...`, and `活动一：...` inside the final `教与学活动` cell. Reason: the teacher and AI need to verify that every confirmed question and activity is used with its depth-learning function.
 - DO NOT fill the `学习评价` cell with long explanatory text when the template provides options. Reason: in this template the cell should only mark options such as `√ A.即时练习　√ B.当堂检测　√ C.展示汇报`.
 - DO NOT output rigid checklist headings such as `教师提出`, `学生预设`, `教师追问`, `活动承接`, `评价反馈`, `过渡提升` as repeated visible subheadings in the final teaching process. Reason: those headings make the lesson stiff and formulaic; they are an internal completeness checklist, not classroom language.
 - DO NOT output experiment activities as bracketed fragments such as `【器材】`, `【操作】`, `【记录】`, `【交流】`, `【结论】` unless the user explicitly asks for that style. Reason: the user wants vivid teacher-student interaction and teachable classroom behavior, not a lab-report skeleton.
 - DO NOT merely list questions separately and then ignore them. Reason: confirmed questions must drive teacher prompts, student responses, experiment choices, transitions, and summaries.
+- DO NOT generate a shallow question chain made of isolated recall questions. Reason: the user requires deep-learning question chains that create concept construction, inquiry, transition, and transfer.
+- DO NOT generate the question-chain confirmation draft without core questions and sub-question chains. Reason: a deep question chain must have an overall structure, not only ten parallel questions.
+- DO NOT omit question-chain type labels in the confirmation draft. Reason: the user needs to verify core, progressive, transitional, inquiry, and transfer functions before Word generation.
 - DO NOT omit any confirmed question from the final teaching process. Reason: the second confirmation step becomes meaningless if the final classroom design does not use the confirmed questions.
+- NEVER create more than 5 major `活动N` labels in one lesson. Reason: an activity is a core student learning task, not every small teaching step; too many activities fragment the lesson and hide the main learning path.
+- DO NOT label knowledge review, emotional elevation, routine practice, teacher explanation, formula calculation, homework assignment, or classroom summary as `活动N`. Reason: these segments may be necessary teaching links, but they are not core student-centered inquiry or thinking activities.
+- DO NOT split one experiment into separate activities such as `设计实验方案`, `动手实验收集数据`, `数据汇总初步分析`, and `得出结论`. Reason: these are internal steps of the same inquiry activity, not independent activities.
+- DO NOT create decorative or nominal activities where students only listen, copy, or answer recall questions. Reason: an activity must help students construct knowledge through purposeful thinking, doing, comparing, discussing, or transferring.
+- NEVER copy the `一米长度认识` example from `references/activity-design.md` into a physics lesson plan unless the lesson itself is about length measurement. Reason: that example is a method source only; unrelated lesson plans must use the method, not the case content.
 - DO NOT compress an experiment or inquiry stage into one short paragraph. Reason: physics lessons must show apparatus use, operation sequence, evidence collection, analysis, conclusion, and teacher feedback.
 - DO NOT use emoji. Reason: lesson-plan communication should remain formal and compact.
 - DO NOT use three sentences when one clear sentence is enough. Reason: concise communication makes confirmation steps easier for the teacher.
@@ -105,6 +118,44 @@ powershell -ExecutionPolicy Bypass -File "<skill-root>\scripts\fill_lesson_templ
 
 The script copies `assets/templates/lesson-template.docx`, clears the copied file's read-only flag, fills the existing template tables, expands the teaching-process table, writes `word/document.xml` with forward slash ZIP paths, and validates table count.
 
+### PowerShell JSON Safety
+
+CRITICAL: Always write the complete lesson data to a UTF-8 `.json` file first, then pass only the JSON file path to PowerShell. DO NOT pass the JSON object itself in `-Command`, `-InputJson`, or any inline argument.
+
+Correct sequence:
+
+1. Create or edit `lesson-data.json` as a normal file.
+2. Validate the file:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "<skill-root>\scripts\validate_lesson_json.ps1" -InputJson "<lesson-data.json>"
+```
+
+3. Fill the Word template:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "<skill-root>\scripts\fill_lesson_template.ps1" -InputJson "<lesson-data.json>" -OutputDocx "<output.docx>"
+```
+
+If JSON validation fails, fix `lesson-data.json`; DO NOT simplify the schema and DO NOT remove required fields to bypass the error.
+
+When a shell command must create the JSON file, use a single-quoted PowerShell here-string so the JSON is written as literal text. The opening `@'` and closing `'@` must each be alone on their own line:
+
+```powershell
+$json = @'
+{
+  "course": {
+    "theme": "课题",
+    "objectives": "学生能够……"
+  },
+  "processRows": []
+}
+'@
+Set-Content -LiteralPath "<lesson-data.json>" -Value $json -Encoding UTF8
+```
+
+Prefer direct file editing over shell-created JSON when available. The final JSON must still use the complete schema below.
+
 For script stability in Windows PowerShell 5.1, use ASCII option keys in JSON:
 
 - `meansChecks`: `ppt`, `worksheet`, `micro-video`, `image`, `model`, `object`, `experiment`, `it`
@@ -132,7 +183,7 @@ Minimum JSON shape:
   "processRows": [
     {
       "stage": "简洁教学环节",
-      "activity": "活动一：...\n问题1：...\n师：...\n生：...",
+      "activity": "活动一：...\n**核心问题1：...**\n递进型问题1-1-1：...\n师：...\n生：...",
       "intention": "简洁设计意图"
     }
   ],
@@ -168,23 +219,49 @@ After drafting objectives, send only the objective confirmation draft and ask th
 
 Generate the question chain only after objectives are confirmed.
 
-The confirmation draft should include at least 10 questions and, for each question, briefly state:
+Before drafting the question chain, read `references/deep-question-chain.md`. Use the uploaded lesson plan and the relevant textbook section as the two main sources. Preserve strong existing activities from the uploaded lesson, and use the textbook to supply missing situations, experiments, apparatus choices, prompts, and transfer contexts.
 
-- Question content.
-- Function, such as概念引入,情境冲突,体验观察,猜想提出,实验设计,证据归纳,概念建构,易错辨析,迁移应用.
-- Related objective.
-- Textbook basis when applicable.
-- Teacher follow-up.
+The confirmation draft must use this table shape:
 
-After the user confirms, embed the questions naturally into the teaching process. Keep `问题N：...` labels only as check anchors, not as a separate question-chain list.
+| 教学情境组织流程 | 问题链设计（如果有预设回答可以注明） | 问题链类型 |
+|---|---|---|
+| 核心问题1：... || 核心问题链 |
+| 情境1：... | 1-1-1 ... | 递进型问题链 |
+| 探究1：... | 1-2-1 ... | 探究型问题链 |
+| 过渡：... | 1-3-1 ... | 过渡型问题链 |
+| 核心问题2：... || 核心问题链 |
+| 迁移情境：... | 2-1-1 ... | 迁移型问题链 |
 
-CRITICAL: The final `教与学活动` cell must include every confirmed question as `问题1：...`, `问题2：...`, etc. These labels belong inside `教与学活动`, not in `教学环节` or `设计意图`.
+CRITICAL requirements for the confirmation draft:
+
+- Include 2 to 4 core questions. Core questions must come from the lesson key points and difficult points.
+- Include at least 10 sub-questions across the whole chain.
+- Cover all five types when the lesson content permits: 核心问题链, 递进型问题链, 过渡型问题链, 探究型问题链, 迁移型问题链.
+- If the lesson has experiments, include inquiry questions for apparatus choice, experimental process, evidence collection, conclusion, and anomaly/error analysis.
+- The later question must grow from the earlier question or answer. DO NOT write ten unrelated questions.
+- Each sub-question must show its source or basis in concise wording, such as `教材活动`, `教材插图`, `上传教案原环节`, `生活情境`, or `实验数据`.
+- At least three questions must require evidence, comparison, explanation, design, evaluation, or transfer, not simple recall.
+- Include expected student thinking only when it helps the teacher judge depth; keep it concise.
+
+Question-chain type standards:
+
+- 核心问题链: organize the whole lesson around key/difficult points; students answer them after completing the sub-question chains.
+- 递进型问题链: follow `情境呈现 -> 观察现象 -> 发现原因/共同特征 -> 归纳概念或规律`.
+- 探究型问题链: follow `提出问题 -> 作出假设 -> 制定计划 -> 选择器材 -> 收集证据 -> 解释问题 -> 表达交流`.
+- 过渡型问题链: connect knowledge points, activities, or core questions; make the need for the next learning stage visible.
+- 迁移型问题链: apply the concept or law to a new real situation; prefer design, decision-making, explanation, or evaluation tasks.
+
+After the user confirms, embed the questions naturally into the teaching process. Keep typed hierarchical labels such as `递进型问题1-1-1：...` as check anchors, not as a separate question-chain list.
+
+CRITICAL: The final `教与学活动` cell must include every confirmed question with its confirmed type and hierarchical number, such as `核心问题1：...`, `递进型问题1-1-1：...`, `探究型问题2-2-1：...`, `过渡型问题2-3-1：...`, `迁移型问题3-3-1：...`. These labels belong inside `教与学活动`, not in `教学环节` or `设计意图`.
 
 ## Teaching Process Requirements
 
 The `教与学活动` cell must be detailed and teachable, similar in density to a strong source lesson plan.
 
 CRITICAL: `教与学流程` is the core of the lesson plan. It must be complete enough that another teacher could teach from it directly.
+
+Before drafting the teaching process, read `references/activity-design.md`. Use it to decide what counts as a major `活动N`, how to merge small links inside one activity, and how to make activities promote student thinking and core literacy. Extract methods only from the `一米长度认识` example; DO NOT output that example's content in unrelated physics lessons.
 
 For each teaching stage:
 
@@ -195,7 +272,20 @@ For each teaching stage:
 - Keep `教学环节` concise, for example `情境导入，认识重力`.
 - Keep `设计意图` concise and polished. Do not mention `问题链` in this cell.
 - In `教与学活动`, list major activities as `活动一：...`, `活动二：...`.
-- Every confirmed `问题N` must appear exactly once in final `教与学活动`, unless the user revised or deleted it.
+- Define `活动` strictly: an activity is a student-centered learning task that lets students think, observe, operate, explore, discuss, compare, construct concepts, or transfer knowledge, and that directly promotes core literacy. It must have a clear task situation, student action, learning evidence, and teacher feedback.
+- A good activity must answer four questions: What do students think about? What do students do? What evidence helps them form a new understanding? How does the teacher guide construction through questioning, comparison, feedback, or lift?
+- Activity design must value precision, targeting, and effectiveness. Do not design an activity only because it looks lively; design it because it helps students experience, compare, discover, and construct a physics idea.
+- Activities should move students from experience to comparison, from comparison to standard or evidence, from evidence to concept, and from concept to transfer.
+- Use 3 to 5 major activities for a normal 40-45 minute lesson. The maximum is 5.
+- Treat `提出问题`, `设计方案`, `选择器材`, `动手实验`, `记录数据`, `数据汇总`, `分析图像`, `交流评价`, and `归纳结论` as internal links of one inquiry activity when they serve the same experimental task.
+- Treat `知识回顾`, `情感升华`, `练习巩固`, `课堂小结`, and `作业布置` as teaching links or summary/evaluation links, not as `活动N`.
+- Example for `重力 力的示意图`: `活动一：观察生活现象，认识重力`; `活动二：探究重力与质量的关系`; `活动三：判断重力方向`; `活动四：绘制力的示意图`; `活动五：迁移应用，解释生活与航天情境`. Do not create 16 activities from the steps inside these activities.
+- Every confirmed question must appear exactly once in final `教与学活动`, unless the user revised or deleted it.
+- Preserve confirmed hierarchical numbers in final check labels. For example, `1-2-1` in the confirmation table must appear as `过渡型问题1-2-1：...` or `探究型问题1-2-1：...` according to its confirmed type. DO NOT convert it to a flat label such as `问题4：...`. Reason: flat numbering hides the depth-learning structure.
+- Bold every `核心问题N：...` label in the final Word when the output format supports bold text. If the writing stage is plain JSON for the template script, write the label as `**核心问题N：...**` so the generator can preserve or later convert the emphasis. Reason: core questions are the lesson spine and must be visually identifiable.
+- Each core question must become a visible stage-level teaching thread. Do not hide core questions in a separate unused list.
+- Each transition question must appear at the boundary between activities, not at the end as an afterthought.
+- Each transfer question must appear in application, summary, homework, or extension, and must require students to use the learned concept in a new context.
 
 For every confirmed question, internally check all six teaching functions below, but DO NOT print these six labels as repeated headings:
 
@@ -210,19 +300,23 @@ Better visible `教与学活动` style:
 
 ```text
 活动二：探究重力与质量的关系
-问题4：三个钩码总质量是单个钩码的3倍，总重是否也是3倍？
+**核心问题2：重力的大小与质量有什么关系？怎样用实验数据证明？**
+递进型问题2-1-1：提起质量不同的物体，手臂感觉有什么不同？这种感觉能否直接作为科学结论？
+探究型问题2-2-1：本实验要探究的是哪两个物理量之间的关系？哪个量需要改变，哪个量需要测量？
+探究型问题2-2-2：为了探究重力与质量的关系，你选择哪些器材？每种器材分别解决什么问题？
 师：（举起一个钩码和三个相同钩码）“大家先不要急着计算，先判断：质量增加到3倍，重力会怎样变化？你的依据是什么？”
 生：“可能也是3倍，因为钩码个数变多了。”
 师：“这只是猜想。要把猜想变成证据，我们需要哪些器材？怎样测量才公平？”
 学生小组讨论后选择弹簧测力计、钩码和铁架台，说明用同一只弹簧测力计依次测量1个、2个、3个钩码的重力，并记录质量与重力。
 教师巡视时提醒学生读数视线要与刻度线相平，发现数据差异较大的小组，追问是否完成调零、是否让钩码静止后再读数。
 汇报时，教师引导学生比较数据，概括“质量增大几倍，重力也近似增大几倍”，并自然过渡到“重力与质量是否成正比”的进一步判断。
+过渡型问题2-3-1：我们已经知道重力大小可以测量和计算，那么重力的方向是否也能仅凭直觉判断？
 ```
 
 For source lesson plans that already have detailed teacher/student activities:
 
 - Preserve strong existing descriptions from the source.
-- Insert confirmed `问题N` labels into matching places.
+- Insert confirmed typed hierarchical labels into matching places, for example `递进型问题1-1-1：...` or `迁移型问题3-3-1：...`.
 - Expand missing student responses, follow-up questions, feedback, and transitions.
 - DO NOT discard detailed source material and replace it with a shorter generic summary. Reason: the user wants strong existing material retained and improved, not flattened.
 
@@ -271,7 +365,19 @@ Before final delivery, check:
 - The bundled template file was used or the reason for not using it was reported.
 - The scripted template filler was run, or the reason for not running it was reported.
 - Confirmed questions are embedded in teacher-student activity, not merely listed.
-- Every confirmed question appears in `教与学活动` as `问题N：...`.
+- Question-chain confirmation draft used the table shape `教学情境组织流程 / 问题链设计 / 问题链类型`.
+- Question-chain confirmation draft included 2 to 4 core questions and at least 10 sub-questions.
+- Question-chain confirmation draft included core, progressive, transitional, inquiry, and transfer types when the lesson content permits.
+- Question-chain questions came from the uploaded lesson plan and the relevant textbook section.
+- Question-chain questions were not isolated recall questions; they required observation, comparison, explanation, design, evidence, evaluation, or transfer.
+- Every confirmed question appears in `教与学活动` with its type and hierarchical number, such as `递进型问题1-1-1：...`, not as a flat `问题N：...`.
+- Final `教与学活动` contains no more than 5 major `活动N` labels.
+- Experiment steps such as designing a plan, operating, recording, analyzing, and concluding are written as internal links of one activity, not independent `活动N` labels.
+- Knowledge review, emotional elevation, practice consolidation, classroom summary, and homework assignment are not labeled as `活动N`.
+- Each major activity has a student-centered task, visible student action, learning evidence, and teacher feedback.
+- Each major activity helps students think, do, compare, discuss, construct, or transfer; none are decorative labels for teacher explanation.
+- Activity sequence supports cognitive progression, such as experience -> comparison -> evidence -> concept -> transfer.
+- No unrelated activity-design example content, such as `一米长度认识`, appears in the final lesson plan unless the lesson is about length measurement.
 - `学习评价` follows the template option format.
 - `教学环节` and `设计意图` do not expose planning labels such as `问题链`.
 - `教学目标`, `板书设计`, `作业布置`, and `教后记` are nonblank and complete.
