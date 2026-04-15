@@ -1,7 +1,7 @@
 interface:
   display_name: "Physics Lesson Plan"
-  short_description: "Generate textbook-aligned Chinese physics lesson plans with bundled DOCX/PDF tools."
-  default_prompt: "Use $physics-lesson-plan to turn my physics lesson draft or transcript into a confirmed, textbook-aligned Word lesson plan using the bundled textbook PDF."
+  short_description: "Generate table-form Chinese physics lesson plans with bundled template and Markdown textbook."
+  default_prompt: "Use $physics-lesson-plan to turn my physics lesson draft or transcript into a confirmed, textbook-aligned Word lesson plan using the bundled template and Markdown textbook."
 
 policy:
   allow_implicit_invocation: true
