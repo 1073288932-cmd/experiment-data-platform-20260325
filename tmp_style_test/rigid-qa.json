@@ -1,0 +1,27 @@
+﻿{
+  "course": {
+    "theme": "重力 力的示意图",
+    "date": "待填写",
+    "lessonType": "A1. 新授课",
+    "description": "B1. 常态课",
+    "contentAnalysis": "测试。",
+    "objectives": "测试目标。",
+    "evaluation": "√A.即时练习",
+    "keyDifficult": "测试。",
+    "breakthrough": "测试。",
+    "seatForm": "B. 小组合作式",
+    "meansChecks": ["ppt"],
+    "methodChecks": ["dialogue"],
+    "flowSummary": "测试。"
+  },
+  "processRows": [
+    {
+      "stage": "测试",
+      "activity": "活动一：测试\n核心问题1：什么是重力？\n师：什么是重力？\n生：重力是地球吸引物体的力。\n师：方向怎样？\n生：竖直向下。\n师：公式是什么？\n生：G=mg。",
+      "intention": "测试。"
+    }
+  ],
+  "board": "测试。",
+  "homework": "测试。",
+  "reflection": "测试。"
+}

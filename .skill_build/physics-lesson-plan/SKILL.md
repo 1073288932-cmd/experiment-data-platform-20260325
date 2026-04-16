@@ -18,6 +18,7 @@ This skill is self-contained for Codex and Claude Code. It bundles:
 - Template filling script: `scripts/fill_lesson_template.ps1`
 - Deep question-chain reference: `references/deep-question-chain.md`
 - Activity design reference: `references/activity-design.md`
+- Teaching-process style reference: `references/teaching-process-style.md`
 
 ## CRITICAL Workflow
 
@@ -63,6 +64,8 @@ This skill is self-contained for Codex and Claude Code. It bundles:
 - DO NOT output rigid checklist headings such as `教师提出`, `学生预设`, `教师追问`, `活动承接`, `评价反馈`, `过渡提升` as repeated visible subheadings in the final teaching process. Reason: those headings make the lesson stiff and formulaic; they are an internal completeness checklist, not classroom language.
 - DO NOT output experiment activities as bracketed fragments such as `【器材】`, `【操作】`, `【记录】`, `【交流】`, `【结论】` unless the user explicitly asks for that style. Reason: the user wants vivid teacher-student interaction and teachable classroom behavior, not a lab-report skeleton.
 - DO NOT merely list questions separately and then ignore them. Reason: confirmed questions must drive teacher prompts, student responses, experiment choices, transitions, and summaries.
+- DO NOT write the final teaching process as repeated one-question-one-answer pairs such as `师：... 生：... 师：... 生：...` with no classroom action between them. Reason: the user requires natural, concrete classroom implementation language, not a scripted Q&A outline.
+- NEVER let question labels replace classroom writing. Reason: anchors such as `问题1：...`, `核心问题1：...`, and `活动一：...` are only coverage checkpoints; the body must still describe teacher setup, student operation,教师巡视,追问,反馈, and transition.
 - DO NOT generate a shallow question chain made of isolated recall questions. Reason: the user requires deep-learning question chains that create concept construction, inquiry, transition, and transfer.
 - DO NOT generate the question-chain confirmation draft without core questions and sub-question chains. Reason: a deep question chain must have an overall structure, not only ten parallel questions.
 - DO NOT omit question-chain type labels in the confirmation draft. Reason: the user needs to verify core, progressive, transitional, inquiry, and transfer functions before Word generation.
@@ -257,6 +260,8 @@ CRITICAL: The final `教与学活动` cell must include every confirmed question
 
 ## Teaching Process Requirements
 
+CRITICAL STYLE: Before writing final `教与学活动`, read `references/teaching-process-style.md`. Follow its natural classroom implementation style. The output must be closer to a polished teaching record than to a question-answer script.
+
 The `教与学活动` cell must be detailed and teachable, similar in density to a strong source lesson plan.
 
 CRITICAL: `教与学流程` is the core of the lesson plan. It must be complete enough that another teacher could teach from it directly.
@@ -268,6 +273,10 @@ For each teaching stage:
 - Preserve and polish strong matching stages from the source lesson plan.
 - Generate missing stages from textbook content when the confirmed question chain or textbook requires them.
 - Include teacher actions, student actions, teacher-student dialogue, experiment operations, expected student responses, teacher follow-up, and evaluation feedback.
+- Use `师：` and `生：` as part of a broader classroom narrative. Between dialogue turns, write what the teacher displays, demonstrates, organizes, writes on the board, or asks students to do, and what students observe, operate, discuss, record, report, draw, calculate, or revise.
+- For each major activity, include at least one concrete student action and one concrete teacher guidance action. Examples: `学生分组讨论`, `学生操作并记录`, `学生汇报数据`, `教师巡视`, `教师追问`, `教师反馈`, `教师板书归纳`, `自然过渡到...`.
+- Every experiment, drawing, group discussion, or inquiry activity must include `教师巡视` or equivalent classroom monitoring language. Reason: the user wants visible teacher behavior and real-time feedback, not only final answers.
+- Every major activity should contain a transition sentence showing how the preceding question or evidence leads to the next learning link. Reason: the problem chain should串起 classroom flow, not sit beside it.
 - Present dialogue with `师：` and `生：`.
 - Keep `教学环节` concise, for example `情境导入，认识重力`.
 - Keep `设计意图` concise and polished. Do not mention `问题链` in this cell.
@@ -277,6 +286,7 @@ For each teaching stage:
 - Activity design must value precision, targeting, and effectiveness. Do not design an activity only because it looks lively; design it because it helps students experience, compare, discover, and construct a physics idea.
 - Activities should move students from experience to comparison, from comparison to standard or evidence, from evidence to concept, and from concept to transfer.
 - Use 3 to 5 major activities for a normal 40-45 minute lesson. The maximum is 5.
+- After every confirmed question label, write an implementation paragraph, not just a short answer. The paragraph should include at least two of these: teacher setup, student action, likely student answer, teacher追问,教师巡视/指导, evidence feedback, transition.
 - Treat `提出问题`, `设计方案`, `选择器材`, `动手实验`, `记录数据`, `数据汇总`, `分析图像`, `交流评价`, and `归纳结论` as internal links of one inquiry activity when they serve the same experimental task.
 - Treat `知识回顾`, `情感升华`, `练习巩固`, `课堂小结`, and `作业布置` as teaching links or summary/evaluation links, not as `活动N`.
 - Example for `重力 力的示意图`: `活动一：观察生活现象，认识重力`; `活动二：探究重力与质量的关系`; `活动三：判断重力方向`; `活动四：绘制力的示意图`; `活动五：迁移应用，解释生活与航天情境`. Do not create 16 activities from the steps inside these activities.
@@ -365,6 +375,8 @@ Before final delivery, check:
 - The bundled template file was used or the reason for not using it was reported.
 - The scripted template filler was run, or the reason for not running it was reported.
 - Confirmed questions are embedded in teacher-student activity, not merely listed.
+- Final `教与学活动` follows `references/teaching-process-style.md`: it uses activity/question anchors for checking, while the body is natural classroom implementation language.
+- Final `教与学活动` is not a repeated `师：... 生：...` Q&A script; it contains student operations, teacher巡视,追问,反馈, and transition language.
 - Question-chain confirmation draft used the table shape `教学情境组织流程 / 问题链设计 / 问题链类型`.
 - Question-chain confirmation draft included 2 to 4 core questions and at least 10 sub-questions.
 - Question-chain confirmation draft included core, progressive, transitional, inquiry, and transfer types when the lesson content permits.
