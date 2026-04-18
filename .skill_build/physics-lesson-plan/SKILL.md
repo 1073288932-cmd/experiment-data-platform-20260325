@@ -16,7 +16,11 @@ This skill is self-contained for Codex and Claude Code. It bundles:
 - Textbook images: `assets/textbooks/八下课本/images/`
 - Word template: `assets/templates/模板.docx` and ASCII alias `assets/templates/lesson-template.docx`
 - Template filling script: `scripts/fill_lesson_template.ps1`
+- DOCX extraction script: `scripts/extract_docx_text.ps1`
+- Input preparation script: `scripts/prepare_lesson_inputs.ps1`
+- Textbook section extraction script: `scripts/extract_textbook_section.ps1`
 - Deep question-chain reference: `references/deep-question-chain.md`
+- Textbook lesson map: `references/textbook-lesson-map.md`
 - Activity design reference: `references/activity-design.md`
 - Teaching-process style reference: `references/teaching-process-style.md`
 
@@ -41,6 +45,17 @@ This skill is self-contained for Codex and Claude Code. It bundles:
 
 - NEVER edit a file before reading it. Reason: editing unread files risks destroying the template structure, user changes, or document-specific formatting.
 - NEVER claim a DOCX/PDF was inspected unless it was actually opened, parsed, rendered, or structurally read. Reason: users rely on this claim to judge whether the output is trustworthy.
+- NEVER use broad `Glob`, recursive search, or trial paths to locate a user-supplied lesson DOCX when the user message already includes a path or filename. Reason: broad search wasted time and found misleading locations; exact path resolution is deterministic.
+- NEVER use `mammoth` for lesson-plan DOCX extraction in this skill. Reason: the skill bundles a tested OOXML extraction script; mammoth requires Node dependencies and caused unnecessary detours.
+- NEVER scan the full textbook Markdown to locate a known lesson. Reason: the bundled lesson map and extraction script can read the exact section in one step.
+- DO NOT open the textbook images folder or enumerate all textbook images while locating a lesson. Reason: image enumeration is slow and irrelevant until a specific extracted textbook section references an image needed for activity design.
+- NEVER try `pandoc` for reading DOCX files in this skill. Reason: Claude Code often runs in environments where pandoc is unavailable, causing wasted trial-and-error; DOCX is a ZIP package and can be read deterministically through `word/document.xml`.
+- DO NOT say "pandoc unavailable, I will use unzip" after trying pandoc. Reason: the skill already knows pandoc is not required; go directly to the OOXML ZIP extraction script.
+- NEVER write inline DOCX extraction code inside `powershell -Command`. Reason: Bash, PowerShell, regex, XML, and Chinese text create multiple quoting layers; this caused parse failures such as `No such file or directory` and garbled text.
+- DO NOT use Bash heredocs, inline regex replacements, or `[Console]::OutputEncoding` snippets for DOCX extraction. Reason: extraction is already implemented in `scripts/extract_docx_text.ps1`; using one fixed script avoids quoting and encoding trial-and-error.
+- NEVER create a temporary extraction script such as `extract_docx.ps1` in the user's lesson folder or Desktop folder. Reason: Chinese directory names such as `教案` can be mis-decoded when Bash launches PowerShell, producing path-not-found errors.
+- DO NOT dynamically write a new PowerShell extraction script during a lesson-plan run. Reason: the bundled script is the tested implementation; dynamic scripts reintroduce quoting, encoding, and path bugs.
+- DO NOT write extracted text beside the source DOCX when the source folder contains Chinese characters. Reason: Claude Code may not have write permission or may mis-handle the Chinese output path; use an ASCII workspace output folder instead.
 - NEVER invent missing course facts such as lesson date, class, grade, textbook version, or课时. Reason: administrative guesses can make the final document unusable.
 - NEVER skip the objective-confirmation step. Reason: objectives control task design, evaluation, and question sequencing.
 - NEVER skip the question-chain-confirmation step. Reason: the question chain is the classroom spine and must reflect the teacher's preferred teaching logic.
@@ -79,19 +94,85 @@ This skill is self-contained for Codex and Claude Code. It bundles:
 - DO NOT use emoji. Reason: lesson-plan communication should remain formal and compact.
 - DO NOT use three sentences when one clear sentence is enough. Reason: concise communication makes confirmation steps easier for the teacher.
 
+## Fast Start Procedure
+
+CRITICAL: Start every lesson-plan run with `scripts/prepare_lesson_inputs.ps1`. Do this before trying to read the DOCX or textbook manually.
+
+If the user message includes a full DOCX path:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-root>\scripts\prepare_lesson_inputs.ps1" -InputDocx "<user-mentioned-docx-path>" -WorkDir "<ascii-workdir>"
+```
+
+If the user message gives only a filename:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-root>\scripts\prepare_lesson_inputs.ps1" -LessonFileName "<filename.docx>" -WorkDir "<ascii-workdir>"
+```
+
+The script automatically extracts the DOCX and, when it can infer the lesson key from the filename or extracted title, automatically extracts the textbook section.
+
+Rules:
+
+- Use the path printed as `RESOLVED_INPUT_DOCX`; do not search again.
+- Use the printed `DOCX_EXTRACT_OUTPUT`; read that extracted text file.
+- Use the printed `LESSON_KEY`; do not infer a different textbook section unless the extracted lesson title proves it is wrong.
+- If `TEXTBOOK_EXTRACT_OUTPUT` is nonblank, read that extracted text file.
+- If `prepare_lesson_inputs.ps1` fails to find the file, ask the user for the full path. DO NOT glob the Desktop.
+- If `STATUS=DOCX_EXTRACTED_TEXTBOOK_KEY_NOT_MATCHED`, read `references/textbook-lesson-map.md` first, then `assets/textbooks/八下课本/INDEX.md`. DO NOT scan the full Markdown first.
+
+## DOCX Reading Procedure
+
+CRITICAL: For every user-supplied `.docx` lesson plan or transcript, read it with the bundled OOXML extraction script. Do not try `pandoc`; do not put extraction code in `powershell -Command`.
+
+Use exactly this pattern:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-root>\scripts\extract_docx_text.ps1" -InputDocx "<input.docx>" -OutputText "<output.extracted.txt>"
+```
+
+Path rules:
+
+- `<skill-root>` must be the current skill folder, for example `C:\Users\student\.claude\skills\physics-lesson-plan`.
+- `<OutputText>` must be in an ASCII workspace/temp folder, not in `Desktop\教案`. Recommended: `<cwd>\docx_extract\source-lesson.extracted.txt`.
+- The output filename should be ASCII, such as `source-lesson.extracted.txt`, even when the source DOCX has a Chinese filename.
+- Do not create or call `C:\Users\student\Desktop\教案\extract_docx.ps1`.
+
+After running it:
+
+1. Read `<output.extracted.txt>`.
+2. Use the `TABLE` / `ROW` markers to identify objectives, teaching process, board design, homework, and reflection.
+3. If extraction fails, report the exact script error. DO NOT fall back to pandoc or inline PowerShell. Reason: fallback attempts repeat the same unavailable-tool and quoting failures.
+
+Example:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\student\.claude\skills\physics-lesson-plan\scripts\extract_docx_text.ps1" -InputDocx "C:\Users\student\Desktop\教案\测试教案2.docx" -OutputText "C:\Users\student\Documents\New project\docx_extract\source-lesson.extracted.txt"
+```
+
+Safer example when running from a project/workspace directory:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\student\.claude\skills\physics-lesson-plan\scripts\extract_docx_text.ps1" -InputDocx "C:\Users\student\Desktop\教案\测试教案2.docx" -OutputText ".\docx_extract\source-lesson.extracted.txt"
+```
+
 ## Textbook Markdown Procedure
 
 CRITICAL: Always use the bundled Markdown textbook unless the user provides a different textbook file.
 
-1. Open `assets/textbooks/八下课本/INDEX.md` first.
-2. Locate the lesson title, chapter title, or activity line number in the index.
-3. Read only the relevant slice of `assets/textbooks/八下课本/MinerU_markdown_202604150001640_b3d8830b.md`.
-4. If the Markdown section references images, inspect referenced files under `assets/textbooks/八下课本/images/` only when image content matters for activity design.
-5. Use text search before broad reading. Recommended searches: lesson title, activity title, and textbook prompts such as `你选用了哪些器材`.
-6. DO NOT scan the whole Markdown file when title or index lookup can locate the lesson. Reason: full-file reading wastes context and slows Claude Code.
-7. Extract the textbook learning path:情境图, opening prompts,活动,体验与猜想,实验与验证,交流与讨论, apparatus lists, original textbook questions, example problems,反思,实践与练习.
-8. Preserve textbook-designed activities whenever relevant, especially prompts asking students to choose apparatus and explain experiment process and conclusion.
-9. If Markdown lookup fails, say exactly what failed and ask for a page image or a lesson title. DO NOT invent textbook content. Reason: invented textbook links break alignment with the actual book.
+CRITICAL FAST PATH: Before opening `INDEX.md`, read `references/textbook-lesson-map.md` or use `scripts/extract_textbook_section.ps1` when `prepare_lesson_inputs.ps1` has produced a `LESSON_KEY`. For common lessons such as `重力 力的示意图` and `压强`, do not open or scan the full textbook Markdown.
+
+1. If `LESSON_KEY` is known, run `scripts/extract_textbook_section.ps1` and read its output text file.
+2. If no `LESSON_KEY` is known, open `references/textbook-lesson-map.md` and match by title keywords.
+3. Only if the map does not match, open `assets/textbooks/八下课本/INDEX.md`.
+4. Locate the lesson title, chapter title, or activity line number in the index.
+5. Read only the relevant slice of `assets/textbooks/八下课本/MinerU_markdown_202604150001640_b3d8830b.md`.
+6. If the extracted Markdown section references images, inspect referenced files under `assets/textbooks/八下课本/images/` only when image content matters for activity design.
+7. Use text search before broad reading. Recommended searches: lesson title, activity title, and textbook prompts such as `你选用了哪些器材`.
+8. DO NOT scan the whole Markdown file when title or index lookup can locate the lesson. Reason: full-file reading wastes context and slows Claude Code.
+9. Extract the textbook learning path:情境图, opening prompts,活动,体验与猜想,实验与验证,交流与讨论, apparatus lists, original textbook questions, example problems,反思,实践与练习.
+10. Preserve textbook-designed activities whenever relevant, especially prompts asking students to choose apparatus and explain experiment process and conclusion.
+11. If Markdown lookup fails, say exactly what failed and ask for a page image or a lesson title. DO NOT invent textbook content. Reason: invented textbook links break alignment with the actual book.
 
 ## CRITICAL Word Template Filling Procedure
 

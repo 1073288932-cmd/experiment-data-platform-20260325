@@ -14,7 +14,7 @@ A .docx file is a ZIP archive containing XML files.
 
 | Task | Approach |
 |------|----------|
-| Read/analyze content | `pandoc` or unpack for raw XML |
+| Read/analyze content | Unpack/read raw OOXML XML directly; in `physics-lesson-plan`, use `scripts/extract_docx_text.ps1` |
 | Create new document | Use `docx-js` - see Creating New Documents below |
 | Edit existing document | Unpack → edit XML → repack - see Editing Existing Documents below |
 
@@ -28,11 +28,19 @@ python scripts/office/soffice.py --headless --convert-to docx document.doc
 
 ### Reading Content
 
-```bash
-# Text extraction with tracked changes
-pandoc --track-changes=all document.docx -o output.md
+CRITICAL for `physics-lesson-plan`: DO NOT use `pandoc` for reading `.docx`. Use the parent skill script:
 
-# Raw XML access
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-root>\scripts\extract_docx_text.ps1" -InputDocx "<input.docx>" -OutputText "<output.extracted.txt>"
+```
+
+Reason: Claude Code environments often do not have pandoc, and inline PowerShell extraction fails on quoting and encoding. DOCX is a ZIP archive; reading `word/document.xml` is deterministic.
+
+DO NOT create a temporary extraction script in the user's Desktop or lesson folder. DO NOT call a script path under a Chinese directory such as `Desktop\教案`. Use the bundled `extract_docx_text.ps1` from the skill folder, and write extracted text to an ASCII workspace folder such as `.\docx_extract\source-lesson.extracted.txt`.
+
+For non-lesson-plan DOCX tasks where the parent script is unavailable, unpack for raw XML instead of trying pandoc:
+
+```bash
 python scripts/office/unpack.py document.docx unpacked/
 ```
 
@@ -584,7 +592,7 @@ After running `comment.py` (see Step 2), add markers to document.xml. For replie
 
 ## Dependencies
 
-- **pandoc**: Text extraction
+- **No pandoc requirement**: read `.docx` by OOXML ZIP extraction. In `physics-lesson-plan`, use `scripts/extract_docx_text.ps1`.
 - **docx**: `npm install -g docx` (new documents)
 - **LibreOffice**: PDF conversion (auto-configured for sandboxed environments via `scripts/office/soffice.py`)
 - **Poppler**: `pdftoppm` for images
