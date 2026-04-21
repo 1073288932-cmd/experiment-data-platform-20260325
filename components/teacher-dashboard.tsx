@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { CheckIcon, ClockIcon, RefreshIcon, SignalIcon } from "@/components/icons";
 import {
   countSubmittedRows,
   formatUpdatedAt,
@@ -166,27 +167,32 @@ export function TeacherDashboard({ initialRows, token }: TeacherDashboardProps) 
     <section className="teacher-top grid">
       <div className="stats-grid">
         <div className="stat-card">
+          <CheckIcon className="stat-icon" />
           <p>已提交组数</p>
           <strong>{submittedCount}</strong>
         </div>
         <div className="stat-card">
+          <SignalIcon className="stat-icon" />
           <p>未提交组数</p>
           <strong>{TOTAL_GROUPS - submittedCount}</strong>
         </div>
-        <div className="stat-card">
+        <div className="stat-card wide-stat">
+          <ClockIcon className="stat-icon" />
           <p>最后提交时间</p>
-          <strong style={{ fontSize: "1.1rem", lineHeight: 1.5 }}>{formatUpdatedAt(latestUpdatedAt)}</strong>
+          <strong>{formatUpdatedAt(latestUpdatedAt)}</strong>
         </div>
       </div>
 
-      <div className="panel card">
+      <div className="panel card teacher-card">
         <div className="teacher-table-header">
           <div>
+            <p className="eyebrow">Live Table</p>
             <h2>全班实验总表</h2>
             <p className="hint">{syncMessage}</p>
           </div>
-          <button className="button secondary" disabled={isResetting} onClick={handleReset} type="button">
-            {isResetting ? "清空中..." : "一键清空本次实验数据"}
+          <button className="button secondary reset-button" disabled={isResetting} onClick={handleReset} type="button">
+            <RefreshIcon className="button-icon" />
+            {isResetting ? "清空中..." : "清空本次实验数据"}
           </button>
         </div>
 
@@ -210,7 +216,7 @@ export function TeacherDashboard({ initialRows, token }: TeacherDashboardProps) 
             <tbody>
               {rows.map((row) => (
                 <tr key={row.group_no}>
-                  <td>{row.group_no}</td>
+                  <td className="group-number">{row.group_no}</td>
                   <td className="teacher-object-cell">{renderChargedObject(row.group_no, row.charged_object)}</td>
                   <td>
                     {row.glass_result === null ? (
@@ -226,7 +232,7 @@ export function TeacherDashboard({ initialRows, token }: TeacherDashboardProps) 
                       <span className={`result-pill ${getResultTone(row.rubber_result)}`}>{row.rubber_result}</span>
                     )}
                   </td>
-                  <td>{formatUpdatedAt(row.updated_at)}</td>
+                  <td className="time-cell">{formatUpdatedAt(row.updated_at)}</td>
                 </tr>
               ))}
             </tbody>

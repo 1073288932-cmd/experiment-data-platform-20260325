@@ -2,13 +2,15 @@
 
 import { startTransition, useState } from "react";
 
+import { CheckIcon } from "@/components/icons";
 import {
   type ExperimentResult,
   type ExperimentRow,
   getChargedObjectDefinition,
   getDisplayChargedObject,
   RESULT_ATTRACT,
-  RESULT_REPEL
+  RESULT_REPEL,
+  TOTAL_GROUPS
 } from "@/lib/experiment";
 
 type RequestState = {
@@ -46,7 +48,7 @@ function renderChargedObject(groupNo: number, fallback?: string | null) {
 
 function AnswerEditor({ id, title, value, onChange }: AnswerEditorProps) {
   return (
-    <div className="field">
+    <div className="field answer-field">
       <label>{title}</label>
       <div className="choice-set">
         <div className="choice">
@@ -58,7 +60,9 @@ function AnswerEditor({ id, title, value, onChange }: AnswerEditorProps) {
             type="radio"
             value={RESULT_REPEL}
           />
-          <label htmlFor={`${id}-repel`}>相互排斥</label>
+          <label htmlFor={`${id}-repel`}>
+            <span>相互排斥</span>
+          </label>
         </div>
         <div className="choice">
           <input
@@ -69,7 +73,9 @@ function AnswerEditor({ id, title, value, onChange }: AnswerEditorProps) {
             type="radio"
             value={RESULT_ATTRACT}
           />
-          <label htmlFor={`${id}-attract`}>相互吸引</label>
+          <label htmlFor={`${id}-attract`}>
+            <span>相互吸引</span>
+          </label>
         </div>
       </div>
     </div>
@@ -162,7 +168,7 @@ export function StudentForm() {
         setRow(rowData);
         setRequestState({
           kind: "success",
-          message: `第 ${rowData.group_no} 组数据已提交，老师端会自动看到最新结果。`
+          message: `第 ${rowData.group_no} 组数据已提交，教师端会自动看到最新结果。`
         });
       });
     } catch (error) {
@@ -177,27 +183,35 @@ export function StudentForm() {
 
   return (
     <section className="grid student-layout">
-      <div className="panel card">
-        <h2>学生端填写</h2>
+      <div className="panel card student-card">
+        <div className="card-heading">
+          <span className="mini-icon">
+            <CheckIcon />
+          </span>
+          <div>
+            <p className="eyebrow">Your Group</p>
+            <h2>学生端填写</h2>
+          </div>
+        </div>
+
         <p className="hint">
-          输入你的小组号，系统会只显示本组这一行。当前实验共 11 组，填写完成后点击提交，教师端会实时更新总表。
+          输入你的小组号，系统会只显示本组这一行。填写完成后点击提交，教师端会实时更新总表。
         </p>
-        <div className="inline-form">
+
+        <div className="inline-form lookup-form">
           <div className="field">
             <label htmlFor="group-input">小组号</label>
             <input
               id="group-input"
               inputMode="numeric"
               onChange={(event) => setGroupInput(event.target.value)}
-              placeholder="请输入 1 到 11"
+              placeholder={`请输入 1 到 ${TOTAL_GROUPS}`}
               value={groupInput}
             />
           </div>
-          <div className="hero-actions">
-            <button className="button" disabled={isLoading} onClick={handleLookup} type="button">
-              {isLoading ? "读取中..." : "读取本组数据"}
-            </button>
-          </div>
+          <button className="button" disabled={isLoading} onClick={handleLookup} type="button">
+            {isLoading ? "读取中..." : "读取本组数据"}
+          </button>
         </div>
 
         {requestState.kind !== "idle" ? (
@@ -214,7 +228,7 @@ export function StudentForm() {
                   <span>组别</span>
                   <strong>{row.group_no}</strong>
                 </div>
-                <div className="meta-box">
+                <div className="meta-box object-box">
                   <span>带电体</span>
                   <strong>{renderChargedObject(row.group_no, row.charged_object)}</strong>
                 </div>
@@ -233,7 +247,7 @@ export function StudentForm() {
                 value={rubberResult}
               />
 
-              <button className="button" disabled={isSubmitting} onClick={handleSubmit} type="button">
+              <button className="button submit-button" disabled={isSubmitting} onClick={handleSubmit} type="button">
                 {isSubmitting ? "提交中..." : "提交实验结果"}
               </button>
             </div>
@@ -243,9 +257,12 @@ export function StudentForm() {
         )}
       </div>
 
-      <aside className="panel card">
+      <aside className="panel card note-card">
+        <p className="eyebrow">Notes</p>
         <h3>填写提示</h3>
-        <p className="hint">当前模板固定为 11 个小组。重点带电体名称会用红色标出，便于学生快速核对本组器材。</p>
+        <p className="hint">
+          当前模板固定为 {TOTAL_GROUPS} 个小组。重点带电体名称会用红色标出，方便快速核对本组器材。
+        </p>
         <p className="hint">同一小组可以再次提交，系统会保留最新值，并在教师端覆盖显示。</p>
       </aside>
     </section>

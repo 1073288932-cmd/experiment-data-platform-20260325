@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { updateExperimentRow } from "@/lib/data";
-import { isExperimentResult, isValidGroupNo, type StudentSubmissionPayload } from "@/lib/experiment";
+import { isExperimentResult, isValidGroupNo, TOTAL_GROUPS, type StudentSubmissionPayload } from "@/lib/experiment";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   const body = (await request.json()) as Partial<StudentSubmissionPayload>;
 
   if (!isValidGroupNo(Number(body.groupNo))) {
-    return NextResponse.json({ message: "组号无效，请输入 1 到 11 之间的整数。" }, { status: 400 });
+    return NextResponse.json({ message: `组号无效，请输入 1 到 ${TOTAL_GROUPS} 之间的整数。` }, { status: 400 });
   }
 
   if (!isExperimentResult(body.glassResult) || !isExperimentResult(body.rubberResult)) {

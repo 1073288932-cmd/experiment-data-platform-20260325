@@ -30,6 +30,9 @@ values
 on conflict (group_no) do update
 set charged_object = excluded.charged_object;
 
+delete from public.experiment_rows
+where group_no > 11;
+
 alter table public.experiment_rows
   add constraint experiment_rows_glass_result_check
   check (glass_result in ('相互排斥', '相互吸引'));

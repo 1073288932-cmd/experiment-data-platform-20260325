@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { getExperimentRow } from "@/lib/data";
-import { isValidGroupNo } from "@/lib/experiment";
+import { isValidGroupNo, TOTAL_GROUPS } from "@/lib/experiment";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const groupNo = Number(request.nextUrl.searchParams.get("groupNo"));
 
   if (!isValidGroupNo(groupNo)) {
-    return NextResponse.json({ message: "组号无效，请输入 1 到 11 之间的整数。" }, { status: 400 });
+    return NextResponse.json({ message: `组号无效，请输入 1 到 ${TOTAL_GROUPS} 之间的整数。` }, { status: 400 });
   }
 
   try {

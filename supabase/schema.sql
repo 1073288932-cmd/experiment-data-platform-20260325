@@ -6,6 +6,22 @@ create table if not exists public.experiment_rows (
   updated_at timestamptz
 );
 
+alter table public.experiment_rows drop constraint if exists experiment_rows_glass_result_check;
+alter table public.experiment_rows drop constraint if exists experiment_rows_rubber_result_check;
+
+update public.experiment_rows
+set
+  glass_result = case
+    when glass_result = '1' then '相互排斥'
+    when glass_result = '0' then '相互吸引'
+    else glass_result
+  end,
+  rubber_result = case
+    when rubber_result = '1' then '相互排斥'
+    when rubber_result = '0' then '相互吸引'
+    else rubber_result
+  end;
+
 insert into public.experiment_rows (group_no, charged_object, glass_result, rubber_result, updated_at)
 values
   (1, '毛皮摩擦过的PVC管', null, null, null),
@@ -22,8 +38,8 @@ values
 on conflict (group_no) do update
 set charged_object = excluded.charged_object;
 
-alter table public.experiment_rows drop constraint if exists experiment_rows_glass_result_check;
-alter table public.experiment_rows drop constraint if exists experiment_rows_rubber_result_check;
+delete from public.experiment_rows
+where group_no > 11;
 
 alter table public.experiment_rows
   add constraint experiment_rows_glass_result_check
@@ -42,4 +58,15 @@ for select
 to anon, authenticated
 using (true);
 
-alter publication supabase_realtime add table public.experiment_rows;
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'experiment_rows'
+  ) then
+    alter publication supabase_realtime add table public.experiment_rows;
+  end if;
+end $$;
