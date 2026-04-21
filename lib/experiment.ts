@@ -1,4 +1,4 @@
-export type ExperimentResult = "相互排斥" | "相互吸引" | null;
+export type ExperimentResult = "\u76f8\u4e92\u6392\u65a5" | "\u76f8\u4e92\u5438\u5f15" | null;
 
 export type ExperimentRow = {
   group_no: number;
@@ -19,21 +19,21 @@ export type ChargedObjectDefinition = {
   emphasis: string;
 };
 
-export const RESULT_REPEL: Exclude<ExperimentResult, null> = "相互排斥";
-export const RESULT_ATTRACT: Exclude<ExperimentResult, null> = "相互吸引";
+export const RESULT_REPEL: Exclude<ExperimentResult, null> = "\u76f8\u4e92\u6392\u65a5";
+export const RESULT_ATTRACT: Exclude<ExperimentResult, null> = "\u76f8\u4e92\u5438\u5f15";
 
 export const CHARGED_OBJECTS: ChargedObjectDefinition[] = [
-  { fullText: "毛皮摩擦过的PVC管", emphasis: "PVC管" },
-  { fullText: "头发摩擦过的气球", emphasis: "气球" },
-  { fullText: "纸巾摩擦过的吸管", emphasis: "吸管" },
-  { fullText: "毛皮摩擦过的笔", emphasis: "笔" },
-  { fullText: "棉手套摩擦过的杯子", emphasis: "杯子" },
-  { fullText: "毛衣摩擦过的刻度尺", emphasis: "刻度尺" },
-  { fullText: "丝绸摩擦过的塑料盒", emphasis: "塑料盒" },
-  { fullText: "塑料袋摩擦过的桶", emphasis: "桶" },
-  { fullText: "白色布摩擦过的板子", emphasis: "板子" },
-  { fullText: "绝缘手套摩擦过的刻度尺", emphasis: "刻度尺" },
-  { fullText: "毛巾摩擦过的试管", emphasis: "试管" }
+  { fullText: "\u6bdb\u76ae\u6469\u64e6\u8fc7\u7684PVC\u7ba1", emphasis: "PVC\u7ba1" },
+  { fullText: "\u5934\u53d1\u6469\u64e6\u8fc7\u7684\u6c14\u7403", emphasis: "\u6c14\u7403" },
+  { fullText: "\u7eb8\u5dfe\u6469\u64e6\u8fc7\u7684\u5438\u7ba1", emphasis: "\u5438\u7ba1" },
+  { fullText: "\u6bdb\u76ae\u6469\u64e6\u8fc7\u7684\u7b14", emphasis: "\u7b14" },
+  { fullText: "\u68c9\u624b\u5957\u6469\u64e6\u8fc7\u7684\u676f\u5b50", emphasis: "\u676f\u5b50" },
+  { fullText: "\u6bdb\u8863\u6469\u64e6\u8fc7\u7684\u523b\u5ea6\u5c3a", emphasis: "\u523b\u5ea6\u5c3a" },
+  { fullText: "\u4e1d\u7ef8\u6469\u64e6\u8fc7\u7684\u5851\u6599\u76d2", emphasis: "\u5851\u6599\u76d2" },
+  { fullText: "\u5851\u6599\u888b\u6469\u64e6\u8fc7\u7684\u6876", emphasis: "\u6876" },
+  { fullText: "\u767d\u8272\u5e03\u6469\u64e6\u8fc7\u7684\u677f\u5b50", emphasis: "\u677f\u5b50" },
+  { fullText: "\u7edd\u7f18\u624b\u5957\u6469\u64e6\u8fc7\u7684\u523b\u5ea6\u5c3a", emphasis: "\u523b\u5ea6\u5c3a" },
+  { fullText: "\u6bdb\u5dfe\u6469\u64e6\u8fc7\u7684\u8bd5\u7ba1", emphasis: "\u8bd5\u7ba1" }
 ] as const;
 
 export const TOTAL_GROUPS = CHARGED_OBJECTS.length;
@@ -60,7 +60,7 @@ export function getResultTone(value: ExperimentResult) {
 
 export function formatUpdatedAt(value: string | null) {
   if (!value) {
-    return "尚未提交";
+    return "\u5c1a\u672a\u63d0\u4ea4";
   }
 
   return new Intl.DateTimeFormat("zh-CN", {

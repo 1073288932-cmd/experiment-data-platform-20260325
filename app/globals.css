@@ -321,6 +321,11 @@ h3 {
   font-weight: 680;
 }
 
+.student-card .field label {
+  font-size: clamp(1.16rem, 2.8vw, 1.5rem);
+  letter-spacing: -0.02em;
+}
+
 .field input {
   width: 100%;
   min-height: 52px;
@@ -331,6 +336,13 @@ h3 {
   background: rgba(255, 255, 255, 0.62);
   color: var(--ink);
   transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.student-card .field input {
+  min-height: 62px;
+  border-width: 1.5px;
+  border-radius: 22px;
+  font-size: clamp(1.12rem, 2.7vw, 1.45rem);
 }
 
 .field input:focus {
@@ -377,6 +389,16 @@ h3 {
   font-size: clamp(1.28rem, 4vw, 2rem);
 }
 
+.student-card .meta-box strong {
+  font-size: clamp(1.32rem, 3.6vw, 1.82rem);
+  line-height: 1.15;
+}
+
+.student-card .object-box strong {
+  font-size: clamp(1.5rem, 4.3vw, 2.15rem);
+  letter-spacing: -0.03em;
+}
+
 .answer-grid {
   display: grid;
   gap: 16px;
@@ -411,6 +433,17 @@ h3 {
     background 160ms ease,
     color 160ms ease,
     transform 160ms ease;
+}
+
+.student-card .choice label {
+  min-height: 68px;
+  font-size: clamp(1.22rem, 3.4vw, 1.62rem);
+}
+
+.student-card .button {
+  min-height: 62px;
+  font-size: clamp(1.12rem, 3vw, 1.42rem);
+  letter-spacing: 0.02em;
 }
 
 .choice label:hover {
