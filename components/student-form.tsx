@@ -180,7 +180,7 @@ export function StudentForm() {
       <div className="panel card">
         <h2>学生端填写</h2>
         <p className="hint">
-          输入你的小组号，系统会只显示本组这一行。当前实验共 6 组，填写完成后点击提交，教师端会实时更新总表。
+          输入你的小组号，系统会只显示本组这一行。当前实验共 11 组，填写完成后点击提交，教师端会实时更新总表。
         </p>
         <div className="inline-form">
           <div className="field">
@@ -189,7 +189,7 @@ export function StudentForm() {
               id="group-input"
               inputMode="numeric"
               onChange={(event) => setGroupInput(event.target.value)}
-              placeholder="请输入 1 到 6"
+              placeholder="请输入 1 到 11"
               value={groupInput}
             />
           </div>
@@ -245,7 +245,7 @@ export function StudentForm() {
 
       <aside className="panel card">
         <h3>填写提示</h3>
-        <p className="hint">当前模板固定为 6 个小组。重点带电体名称会用红色标出，便于学生快速核对本组器材。</p>
+        <p className="hint">当前模板固定为 11 个小组。重点带电体名称会用红色标出，便于学生快速核对本组器材。</p>
         <p className="hint">同一小组可以再次提交，系统会保留最新值，并在教师端覆盖显示。</p>
       </aside>
     </section>

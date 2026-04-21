@@ -6,17 +6,19 @@ create table if not exists public.experiment_rows (
   updated_at timestamptz
 );
 
-delete from public.experiment_rows
-where group_no > 6;
-
 insert into public.experiment_rows (group_no, charged_object, glass_result, rubber_result, updated_at)
 values
   (1, '毛皮摩擦过的PVC管', null, null, null),
   (2, '头发摩擦过的气球', null, null, null),
   (3, '纸巾摩擦过的吸管', null, null, null),
-  (4, '丝绸摩擦过的塑料盒', null, null, null),
-  (5, '塑料袋摩擦过的桶', null, null, null),
-  (6, '毛巾摩擦过的试管', null, null, null)
+  (4, '毛皮摩擦过的笔', null, null, null),
+  (5, '棉手套摩擦过的杯子', null, null, null),
+  (6, '毛衣摩擦过的刻度尺', null, null, null),
+  (7, '丝绸摩擦过的塑料盒', null, null, null),
+  (8, '塑料袋摩擦过的桶', null, null, null),
+  (9, '白色布摩擦过的板子', null, null, null),
+  (10, '绝缘手套摩擦过的刻度尺', null, null, null),
+  (11, '毛巾摩擦过的试管', null, null, null)
 on conflict (group_no) do update
 set charged_object = excluded.charged_object;
 

@@ -26,8 +26,13 @@ export const CHARGED_OBJECTS: ChargedObjectDefinition[] = [
   { fullText: "毛皮摩擦过的PVC管", emphasis: "PVC管" },
   { fullText: "头发摩擦过的气球", emphasis: "气球" },
   { fullText: "纸巾摩擦过的吸管", emphasis: "吸管" },
+  { fullText: "毛皮摩擦过的笔", emphasis: "笔" },
+  { fullText: "棉手套摩擦过的杯子", emphasis: "杯子" },
+  { fullText: "毛衣摩擦过的刻度尺", emphasis: "刻度尺" },
   { fullText: "丝绸摩擦过的塑料盒", emphasis: "塑料盒" },
   { fullText: "塑料袋摩擦过的桶", emphasis: "桶" },
+  { fullText: "白色布摩擦过的板子", emphasis: "板子" },
+  { fullText: "绝缘手套摩擦过的刻度尺", emphasis: "刻度尺" },
   { fullText: "毛巾摩擦过的试管", emphasis: "试管" }
 ] as const;
 

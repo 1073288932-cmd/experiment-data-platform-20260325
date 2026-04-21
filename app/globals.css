@@ -45,7 +45,7 @@ select {
 }
 
 .shell {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1360px, calc(100% - 32px));
   margin: 0 auto;
   padding: 28px 0 64px;
 }
@@ -313,21 +313,24 @@ th {
 }
 
 .teacher-table {
-  min-width: 1080px;
+  min-width: 1180px;
 }
 
 .teacher-table th,
 .teacher-table td {
-  font-size: 1.35rem;
-  line-height: 1.5;
-  padding: 18px 16px;
+  font-size: 1.2rem;
+  line-height: 1.22;
+  padding: 8px 14px;
+  vertical-align: middle;
 }
 
 .teacher-table th {
-  font-size: 1.5rem;
+  font-size: 1.28rem;
+  padding: 12px 14px;
 }
 
 .teacher-object-cell {
+  font-size: 1.28rem;
   font-weight: 700;
 }
 
@@ -340,12 +343,13 @@ th {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 110px;
-  padding: 8px 14px;
+  min-width: 132px;
+  padding: 7px 16px;
   border-radius: 999px;
   font-weight: 700;
   border: 1px solid transparent;
-  font-size: 1rem;
+  font-size: 1.18rem;
+  line-height: 1.15;
 }
 
 .result-pill.repel {
@@ -392,7 +396,7 @@ th {
 
   .teacher-table th,
   .teacher-table td {
-    font-size: 1.05rem;
-    padding: 14px 12px;
+    font-size: 1rem;
+    padding: 10px 10px;
   }
 }
