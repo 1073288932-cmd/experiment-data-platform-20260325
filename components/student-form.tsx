@@ -48,7 +48,8 @@ type AnswerEditorProps = {
 };
 
 function renderChargedObject(groupNo: number, fallback?: string | null) {
-  const definition = getChargedObjectDefinition(groupNo);
+  const normalizedGroupNo = Number(groupNo);
+  const definition = getChargedObjectDefinition(normalizedGroupNo);
 
   if (!definition) {
     return fallback ?? "";
@@ -66,7 +67,7 @@ function renderChargedObject(groupNo: number, fallback?: string | null) {
   return (
     <span className="charged-object-text">
       {prefix}
-      <span className="charged-object-emphasis">{definition.emphasis}</span>
+      <span className="charged-object-emphasis student-object-keyword">{definition.emphasis}</span>
       {suffix}
     </span>
   );
@@ -256,7 +257,7 @@ export function StudentForm() {
                 </div>
                 <div className="meta-box object-box">
                   <span>{TEXT.objectMeta}</span>
-                  <strong>{renderChargedObject(row.group_no, row.charged_object)}</strong>
+                  <div className="student-object-value">{renderChargedObject(row.group_no, row.charged_object)}</div>
                 </div>
               </div>
 

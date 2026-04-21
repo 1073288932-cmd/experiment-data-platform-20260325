@@ -416,15 +416,35 @@ h3 {
   line-height: 1.15;
 }
 
-.student-card .object-box strong {
-  font-size: clamp(1.78rem, 4.2vw, 2.55rem);
-  letter-spacing: -0.03em;
-}
-
 .charged-object-text,
 .charged-object-emphasis {
   font: inherit;
   line-height: inherit;
+}
+
+.student-object-value {
+  display: block;
+  color: var(--ink);
+  font-size: clamp(2.15rem, 4.4vw, 3.35rem);
+  font-weight: 820;
+  letter-spacing: -0.045em;
+  line-height: 1.04;
+}
+
+.student-object-value .charged-object-text {
+  display: inline;
+  color: inherit;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+}
+
+.student-object-value .student-object-keyword {
+  display: inline !important;
+  color: var(--danger) !important;
+  font-size: inherit !important;
+  font-weight: 900 !important;
+  line-height: inherit !important;
 }
 
 .answer-grid {
