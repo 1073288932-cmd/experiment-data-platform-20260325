@@ -7,7 +7,6 @@ import {
   type ExperimentResult,
   type ExperimentRow,
   getChargedObjectDefinition,
-  getDisplayChargedObject,
   RESULT_ATTRACT,
   RESULT_REPEL,
   TOTAL_GROUPS
@@ -33,7 +32,6 @@ const TEXT = {
   submittingButton: "\u63d0\u4ea4\u4e2d...",
   glassTitle: "\u4e0e\u4e1d\u7ef8\u6469\u64e6\u8fc7\u7684\u73bb\u7483\u68d2",
   rubberTitle: "\u4e0e\u6bdb\u76ae\u6469\u64e6\u8fc7\u7684\u6a61\u80f6\u68d2",
-  noteTitle: "\u586b\u5199\u63d0\u793a",
   invalidGroupEmpty: "\u8bf7\u5148\u8f93\u5165\u5c0f\u7ec4\u53f7\u3002",
   lookupFallback: "\u672a\u627e\u5230\u8be5\u5c0f\u7ec4\u3002",
   lookupFailed: "\u8bfb\u53d6\u6570\u636e\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5\u3002",
@@ -51,20 +49,26 @@ type AnswerEditorProps = {
 
 function renderChargedObject(groupNo: number, fallback?: string | null) {
   const definition = getChargedObjectDefinition(groupNo);
-  const text = getDisplayChargedObject(groupNo, fallback);
 
-  if (!definition || !text.includes(definition.emphasis)) {
-    return text;
+  if (!definition) {
+    return fallback ?? "";
   }
 
-  const [prefix, suffix] = text.split(definition.emphasis);
+  const index = definition.fullText.indexOf(definition.emphasis);
+
+  if (index < 0) {
+    return definition.fullText;
+  }
+
+  const prefix = definition.fullText.slice(0, index);
+  const suffix = definition.fullText.slice(index + definition.emphasis.length);
 
   return (
-    <>
+    <span className="charged-object-text">
       {prefix}
       <span className="charged-object-emphasis">{definition.emphasis}</span>
       {suffix}
-    </>
+    </span>
   );
 }
 
@@ -280,17 +284,6 @@ export function StudentForm() {
           </div>
         )}
       </div>
-
-      <aside className="panel card note-card">
-        <p className="eyebrow">Notes</p>
-        <h3>{TEXT.noteTitle}</h3>
-        <p className="hint">
-          {`\u5f53\u524d\u6a21\u677f\u56fa\u5b9a\u4e3a ${TOTAL_GROUPS} \u4e2a\u5c0f\u7ec4\u3002\u91cd\u70b9\u5e26\u7535\u4f53\u540d\u79f0\u4f1a\u7528\u7ea2\u8272\u6807\u51fa\uff0c\u65b9\u4fbf\u5feb\u901f\u6838\u5bf9\u672c\u7ec4\u5668\u6750\u3002`}
-        </p>
-        <p className="hint">
-          {"\u540c\u4e00\u5c0f\u7ec4\u53ef\u4ee5\u518d\u6b21\u63d0\u4ea4\uff0c\u7cfb\u7edf\u4f1a\u4fdd\u7559\u6700\u65b0\u503c\uff0c\u5e76\u5728\u6559\u5e08\u7aef\u8986\u76d6\u663e\u793a\u3002"}
-        </p>
-      </aside>
     </section>
   );
 }

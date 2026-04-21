@@ -4,7 +4,7 @@ import { StudentForm } from "@/components/student-form";
 export default function StudentPage() {
   return (
     <main className="shell">
-      <section className="panel hero compact-hero">
+      <section className="panel hero compact-hero student-hero">
         <div className="section-kicker">
           <StudentIcon className="kicker-icon" />
           <p className="eyebrow">Student Input</p>

@@ -122,6 +122,22 @@ svg {
   margin-bottom: 18px;
 }
 
+.student-hero {
+  width: min(100%, 1180px);
+  margin: 0 auto 16px;
+  padding: 20px 26px;
+  gap: 10px;
+}
+
+.student-hero h1 {
+  font-size: clamp(1.9rem, 3vw, 3rem);
+}
+
+.student-hero p:not(.eyebrow) {
+  max-width: 62ch;
+  color: var(--muted);
+}
+
 .teacher-hero {
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
@@ -286,8 +302,10 @@ h3 {
 }
 
 .student-layout {
-  grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.52fr);
+  width: min(100%, 1180px);
+  grid-template-columns: 1fr;
   align-items: start;
+  margin: 0 auto;
 }
 
 .card {
@@ -301,13 +319,17 @@ h3 {
   gap: 20px;
 }
 
+.student-card {
+  gap: 18px;
+}
+
 .inline-form {
   display: grid;
   gap: 16px;
 }
 
 .lookup-form {
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, auto);
   align-items: end;
 }
 
@@ -353,17 +375,17 @@ h3 {
 
 .row-preview {
   display: grid;
-  gap: 18px;
-  padding: 18px;
+  gap: 20px;
+  padding: clamp(18px, 2.4vw, 28px);
   border: 1px solid var(--line);
-  border-radius: 24px;
+  border-radius: 28px;
   background: rgba(255, 255, 255, 0.44);
 }
 
 .meta-grid {
   display: grid;
-  grid-template-columns: 0.42fr 1fr;
-  gap: 12px;
+  grid-template-columns: 0.36fr 1fr;
+  gap: 14px;
 }
 
 .meta-box {
@@ -395,8 +417,14 @@ h3 {
 }
 
 .student-card .object-box strong {
-  font-size: clamp(1.5rem, 4.3vw, 2.15rem);
+  font-size: clamp(1.78rem, 4.2vw, 2.55rem);
   letter-spacing: -0.03em;
+}
+
+.charged-object-text,
+.charged-object-emphasis {
+  font: inherit;
+  line-height: inherit;
 }
 
 .answer-grid {
