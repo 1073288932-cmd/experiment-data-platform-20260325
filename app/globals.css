@@ -76,8 +76,8 @@ svg {
 }
 
 .teacher-shell {
-  width: min(1760px, calc(100% - 28px));
-  padding-top: 14px;
+  width: min(1840px, calc(100% - 24px));
+  padding-top: 10px;
 }
 
 .panel {
@@ -538,7 +538,7 @@ h3 {
 }
 
 .teacher-top {
-  gap: 12px;
+  gap: 10px;
 }
 
 .stats-grid {
@@ -599,7 +599,7 @@ h3 {
 }
 
 .teacher-table-header h2 {
-  font-size: clamp(1.8rem, 2.2vw, 2.55rem);
+  font-size: clamp(1.9rem, 2.35vw, 2.8rem);
 }
 
 .reset-button {
@@ -629,19 +629,19 @@ th {
 }
 
 .teacher-table {
-  min-width: 1260px;
+  min-width: 1320px;
 }
 
 .teacher-table th,
 .teacher-table td {
-  padding: 7px 14px;
-  font-size: clamp(1.06rem, 1.18vw, 1.34rem);
-  line-height: 1.18;
+  padding: 10px 16px;
+  font-size: clamp(1.24rem, 1.38vw, 1.62rem);
+  line-height: 1.2;
 }
 
 .teacher-table th {
-  padding-block: 10px;
-  font-size: clamp(1.12rem, 1.28vw, 1.48rem);
+  padding-block: 12px;
+  font-size: clamp(1.32rem, 1.5vw, 1.78rem);
 }
 
 .teacher-table tbody tr {
@@ -656,19 +656,19 @@ th {
   width: 70px;
   text-align: center;
   color: var(--ink);
-  font-size: 1.34rem !important;
+  font-size: clamp(1.42rem, 1.6vw, 1.92rem) !important;
 }
 
 .teacher-object-cell {
-  width: 340px;
+  width: 390px;
   color: var(--ink);
-  font-size: clamp(1.24rem, 1.42vw, 1.62rem) !important;
+  font-size: clamp(1.48rem, 1.74vw, 2rem) !important;
   font-weight: 760;
   letter-spacing: -0.02em;
 }
 
 .time-cell {
-  width: 220px;
+  width: 245px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -680,13 +680,13 @@ th {
 
 .result-pill {
   display: inline-flex;
-  min-width: 136px;
+  min-width: 158px;
   align-items: center;
   justify-content: center;
-  padding: 7px 16px;
+  padding: 9px 18px;
   border: 1px solid transparent;
   border-radius: 999px;
-  font-size: clamp(1.16rem, 1.26vw, 1.44rem);
+  font-size: clamp(1.34rem, 1.52vw, 1.82rem);
   font-weight: 800;
   line-height: 1.08;
   letter-spacing: 0.04em;
@@ -710,11 +710,11 @@ th {
 
 @media (min-width: 1280px) and (max-height: 900px) {
   .teacher-shell {
-    padding-top: 10px;
+    padding-top: 6px;
   }
 
   .teacher-hero {
-    padding: 16px 24px;
+    padding: 12px 22px;
   }
 
   .teacher-hero p:not(.eyebrow) {
@@ -726,17 +726,29 @@ th {
   }
 
   .teacher-card {
-    gap: 12px;
-    padding: 18px 24px 22px;
+    gap: 10px;
+    padding: 14px 22px 18px;
   }
 
   .teacher-table th,
   .teacher-table td {
-    padding-block: 5px;
+    padding-block: 8px;
+    font-size: clamp(1.18rem, 1.3vw, 1.48rem);
+  }
+
+  .teacher-table th {
+    padding-block: 10px;
+    font-size: clamp(1.24rem, 1.42vw, 1.62rem);
+  }
+
+  .teacher-object-cell {
+    font-size: clamp(1.4rem, 1.58vw, 1.78rem) !important;
   }
 
   .result-pill {
-    padding-block: 6px;
+    min-width: 150px;
+    padding-block: 8px;
+    font-size: clamp(1.26rem, 1.42vw, 1.62rem);
   }
 }
 
