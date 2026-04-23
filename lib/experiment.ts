@@ -26,14 +26,14 @@ export const CHARGED_OBJECTS: ChargedObjectDefinition[] = [
   { fullText: "\u6bdb\u76ae\u6469\u64e6\u8fc7\u7684PVC\u7ba1", emphasis: "PVC\u7ba1" },
   { fullText: "\u5934\u53d1\u6469\u64e6\u8fc7\u7684\u6c14\u7403", emphasis: "\u6c14\u7403" },
   { fullText: "\u7eb8\u5dfe\u6469\u64e6\u8fc7\u7684\u5438\u7ba1", emphasis: "\u5438\u7ba1" },
-  { fullText: "\u6bdb\u76ae\u6469\u64e6\u8fc7\u7684\u7b14", emphasis: "\u7b14" },
-  { fullText: "\u68c9\u624b\u5957\u6469\u64e6\u8fc7\u7684\u676f\u5b50", emphasis: "\u676f\u5b50" },
+  { fullText: "\u5934\u53d1\u6469\u64e6\u8fc7\u7684\u5851\u6599\u7ba1", emphasis: "\u5851\u6599\u7ba1" },
   { fullText: "\u6bdb\u8863\u6469\u64e6\u8fc7\u7684\u523b\u5ea6\u5c3a", emphasis: "\u523b\u5ea6\u5c3a" },
-  { fullText: "\u4e1d\u7ef8\u6469\u64e6\u8fc7\u7684\u5851\u6599\u76d2", emphasis: "\u5851\u6599\u76d2" },
-  { fullText: "\u5851\u6599\u888b\u6469\u64e6\u8fc7\u7684\u6876", emphasis: "\u6876" },
-  { fullText: "\u767d\u8272\u5e03\u6469\u64e6\u8fc7\u7684\u677f\u5b50", emphasis: "\u677f\u5b50" },
+  { fullText: "\u5934\u53d1\u6469\u64e6\u8fc7\u7684\u6c14\u7403", emphasis: "\u6c14\u7403" },
+  { fullText: "\u4e1d\u7ef8\u6469\u64e6\u8fc7\u7684\u76d2\u5b50", emphasis: "\u76d2\u5b50" },
   { fullText: "\u7edd\u7f18\u624b\u5957\u6469\u64e6\u8fc7\u7684\u523b\u5ea6\u5c3a", emphasis: "\u523b\u5ea6\u5c3a" },
-  { fullText: "\u6bdb\u5dfe\u6469\u64e6\u8fc7\u7684\u8bd5\u7ba1", emphasis: "\u8bd5\u7ba1" }
+  { fullText: "\u767d\u5e03\u6469\u64e6\u8fc7\u7684\u4e9a\u514b\u529b\u677f", emphasis: "\u4e9a\u514b\u529b\u677f" },
+  { fullText: "\u7edd\u7f18\u624b\u5957\u6469\u64e6\u8fc7\u7684\u523b\u5ea6\u5c3a", emphasis: "\u523b\u5ea6\u5c3a" },
+  { fullText: "\u767d\u5e03\u6469\u64e6\u8fc7\u7684\u8bd5\u7ba1", emphasis: "\u8bd5\u7ba1" }
 ] as const;
 
 export const TOTAL_GROUPS = CHARGED_OBJECTS.length;

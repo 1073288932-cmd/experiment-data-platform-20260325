@@ -27,14 +27,14 @@ values
   (1, '毛皮摩擦过的PVC管', null, null, null),
   (2, '头发摩擦过的气球', null, null, null),
   (3, '纸巾摩擦过的吸管', null, null, null),
-  (4, '毛皮摩擦过的笔', null, null, null),
-  (5, '棉手套摩擦过的杯子', null, null, null),
-  (6, '毛衣摩擦过的刻度尺', null, null, null),
-  (7, '丝绸摩擦过的塑料盒', null, null, null),
-  (8, '塑料袋摩擦过的桶', null, null, null),
-  (9, '白色布摩擦过的板子', null, null, null),
+  (4, '头发摩擦过的塑料管', null, null, null),
+  (5, '毛衣摩擦过的刻度尺', null, null, null),
+  (6, '头发摩擦过的气球', null, null, null),
+  (7, '丝绸摩擦过的盒子', null, null, null),
+  (8, '绝缘手套摩擦过的刻度尺', null, null, null),
+  (9, '白布摩擦过的亚克力板', null, null, null),
   (10, '绝缘手套摩擦过的刻度尺', null, null, null),
-  (11, '毛巾摩擦过的试管', null, null, null)
+  (11, '白布摩擦过的试管', null, null, null)
 on conflict (group_no) do update
 set charged_object = excluded.charged_object;
 
